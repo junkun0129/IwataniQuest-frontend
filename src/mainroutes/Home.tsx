@@ -8,6 +8,7 @@ function Home() {
       <h1>Home</h1>
       <h1 onClick={(e) => navi("/login")}>login</h1>
       <h1 onClick={() => navi("/signup")}>home</h1>
+      <h1 onClick={() => navi("/game")}>home</h1>
     </>
   );
 }
