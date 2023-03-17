@@ -1,22 +1,15 @@
 import { useEffect, EffectCallback, DependencyList, useRef } from "react";
 
 export const useNonInitialEffect = (
-  effect: EffectCallback,
-  deps?: DependencyList
+  func: () => void,
+  deps: DependencyList | undefined
 ) => {
-  const initialRender = useRef(true);
-
+  const didMount = useRef(false);
   useEffect(() => {
-    let effectReturns: void | (() => void | undefined) = () => {};
-
-    if (initialRender.current) {
-      initialRender.current = false;
+    if (didMount.current) {
+      func();
     } else {
-      effectReturns = effect();
-    }
-
-    if (effectReturns && typeof effectReturns === "function") {
-      return effectReturns;
+      didMount.current = true;
     }
   }, deps);
 };

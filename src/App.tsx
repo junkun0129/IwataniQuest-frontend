@@ -12,6 +12,7 @@ import Home from "./mainroutes/Home";
 import env from "ts-react-dotenv";
 import { useNonInitialEffect } from "./customhooks/useNonInitialEffect";
 import EnemiesManage from "./admincompo/EnemiesManage";
+import reuseValue from "./reuseValue";
 
 export interface ServerToClientEvents {
   screenSwitch: (hit: string) => void;
@@ -29,7 +30,7 @@ export interface ClientToServerEvents {
 // const url:string = process.env.SERVER_URL;
 
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  "http://localhost:8080"
+  reuseValue.serverURL
 );
 
 function App() {
