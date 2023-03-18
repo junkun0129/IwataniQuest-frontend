@@ -156,10 +156,6 @@ export class GamePanel {
     //map create
     this.collisionM.mapArrayCreate();
 
-    let time = Date.now();
-    let delta: number = 0;
-    let iwatani4: number = 0;
-
     //draw on canvas
     this.draw();
 
@@ -186,16 +182,16 @@ export class GamePanel {
 
     // encount;
     // if(encount)this.socket.emit("encount", "hit")
-    const encount = this.Encounter();
+    // const encount = this.Encounter();
 
-    if (encount && this.gameState !== this.battleScene) {
-      this.socket.emit("encount", "hit");
-      this.gameState = this.battleScene;
-    }
+    // if (encount && this.gameState !== this.battleScene) {
+    //   this.socket.emit("encount", "hit");
+    //   this.gameState = this.battleScene;
+    // }
 
-    this.socket.on("backSwitch", (data) => {
-      this.gameState = this.fieldScene;
-    });
+    // this.socket.on("backSwitch", (data) => {
+    //   this.gameState = this.fieldScene;
+    // });
 
     requestAnimationFrame(this.gameloop.bind(this));
   }

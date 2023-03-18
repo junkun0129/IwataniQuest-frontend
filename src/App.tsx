@@ -20,12 +20,19 @@ export interface ServerToClientEvents {
   save: (save: string) => void;
 }
 
+type walkType = {
+  name: string;
+  email: string;
+  x: number;
+  y: number;
+};
 export interface ClientToServerEvents {
   hello: () => void;
   oi: (input: string) => void;
   encount: (encount: string) => void;
   back: (backback: string) => void;
   save: (save: string) => void;
+  walk: ({ name, x, y }: walkType) => void;
 }
 // const url:string = process.env.SERVER_URL;
 

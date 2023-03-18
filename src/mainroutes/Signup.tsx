@@ -27,10 +27,11 @@ function Signup() {
       headers: { "Content-Type": "application/json" },
     })
       .then(async (response) => {
-        if (!response.ok) {
-          if (response.status === 404) setError("user already exists");
+        const data = await response.json();
+        console.log(data, "this is response");
+        if (data === "user exists") {
+          setError("user already exists");
         } else {
-          const data = await response.json();
           console.log(data, "back from server");
           navigate("/login");
         }
