@@ -1,6 +1,6 @@
 const reuseValue = {
-  serverURL: "http://localhost:8080",
+  serverURL: "https://iwataniquest-backend.onrender.com/",
 };
 
 export default reuseValue;
-// "https://iwataniquest-backend.onrender.com/"
+//
