@@ -1,10 +1,11 @@
 import * as React from "react";
 import { Component, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { socketType } from "../gamecompo/Field";
 import reuseValue from "../reuseValue";
 import { createUser } from "../store/features/userStatuSlice";
 import { useAppDispatch, useAppSelector } from "../store/store";
-function Login() {
+function Login({ socket }: socketType) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
@@ -31,6 +32,7 @@ function Login() {
         } else {
           console.log(response.ok);
           const data = await response.json();
+          socket.emit("tempo", data);
           console.log(data, "this is data");
           userStatusDispach(
             createUser({

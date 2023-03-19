@@ -20,12 +20,27 @@ type walkType = {
   x: number;
   y: number;
 };
+
+type userType = {
+  userId: string;
+  email: string;
+  name: string;
+  status: {
+    at: number;
+    exp: number;
+    hp: number;
+    maxmumHp: number;
+    level: number;
+  };
+  token: string;
+};
 export interface ServerToClientEvents {
   screenSwitch: (hit: string) => void;
   backSwitch: (backback: string) => void;
   save: (save: string) => void;
   pedestrians: (pedestrians: [walkType]) => void;
   newPedestrians: (newPedestrians: [walkType]) => void;
+  tempoBack: (tempoBack: userType) => void;
 }
 
 export interface ClientToServerEvents {
@@ -50,7 +65,10 @@ function App() {
           <Route path="/" element={<Home></Home>}></Route>
           <Route path="/game" element={<Game socket={socket}></Game>}></Route>
           <Route path="/signup" element={<Signup></Signup>}></Route>
-          <Route path="/login" element={<Login></Login>}></Route>
+          <Route
+            path="/login"
+            element={<Login socket={socket}></Login>}
+          ></Route>
           <Route
             path="/admin/enemies"
             element={<EnemiesManage></EnemiesManage>}
