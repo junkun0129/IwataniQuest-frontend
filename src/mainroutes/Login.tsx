@@ -32,8 +32,7 @@ function Login({ socket }: socketType) {
         } else {
           console.log(response.ok);
           const data = await response.json();
-          socket.emit("tempo", data);
-          console.log(data, "this is data");
+
           userStatusDispach(
             createUser({
               userId: data.userId,
