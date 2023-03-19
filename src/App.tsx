@@ -14,18 +14,20 @@ import { useNonInitialEffect } from "./customhooks/useNonInitialEffect";
 import EnemiesManage from "./admincompo/EnemiesManage";
 import reuseValue from "./reuseValue";
 
-export interface ServerToClientEvents {
-  screenSwitch: (hit: string) => void;
-  backSwitch: (backback: string) => void;
-  save: (save: string) => void;
-}
-
 type walkType = {
   name: string;
   email: string;
   x: number;
   y: number;
 };
+export interface ServerToClientEvents {
+  screenSwitch: (hit: string) => void;
+  backSwitch: (backback: string) => void;
+  save: (save: string) => void;
+  pedestrians: (pedestrians: [walkType]) => void;
+  newPedestrians: (newPedestrians: [walkType]) => void;
+}
+
 export interface ClientToServerEvents {
   hello: () => void;
   oi: (input: string) => void;

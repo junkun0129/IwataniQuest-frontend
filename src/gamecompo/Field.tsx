@@ -50,6 +50,10 @@ function Field({ socket }: socketType) {
         const data = await res.json();
       });
     });
+
+    // socket.on("pedestrians", (data) => {
+    //   console.log(data, "pedestrian");
+    // });
   }, [socket]);
 
   return (

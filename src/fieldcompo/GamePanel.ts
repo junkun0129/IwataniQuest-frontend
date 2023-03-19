@@ -15,6 +15,7 @@ import { Book } from "./Book.js";
 import { Socket } from "socket.io-client";
 import { ServerToClientEvents, ClientToServerEvents } from "../App.js";
 import { getItemFromLocalState } from "./LocalState";
+import { OtherPlayers } from "./npc/OtherPlayers.js";
 
 type statusType = {
   email: string;
@@ -26,6 +27,13 @@ type statusType = {
     level: number;
   };
   userId: string;
+};
+
+type pedestriandsType = {
+  name: string;
+  email: string;
+  x: number;
+  y: number;
 };
 
 const damiStatus = {
@@ -117,6 +125,10 @@ export class GamePanel {
   public showCoodinates: boolean = true;
 
   public status: statusType = damiStatus;
+
+  public pedestrians: pedestriandsType[] = [];
+  public otherPlayers: OtherPlayers[] = [];
+
   constructor(
     c: CanvasRenderingContext2D,
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
@@ -193,6 +205,20 @@ export class GamePanel {
     //   this.gameState = this.fieldScene;
     // });
 
+    this.socket.on("pedestrians", (data) => {
+      // console.log(data, "this is pedestriands");
+
+      // console.log(data);
+      for (let i: number = 0; i < data.length; i++) {
+        this.otherPlayers[i] = new OtherPlayers(this);
+        this.otherPlayers[i].npcX = data[i].x;
+        this.otherPlayers[i].npcY = data[i].y;
+        this.otherPlayers[i].picture = "/img/main.png";
+        this.otherPlayers[i].direction = "down";
+      }
+      // console.log(this.otherPlayers);
+    });
+
     requestAnimationFrame(this.gameloop.bind(this));
   }
 
@@ -201,6 +227,10 @@ export class GamePanel {
 
     this.tileM.draw(this.c);
     this.player.draw(this.c);
+    // console.log(this.otherPlayers);
+    this.otherPlayers.forEach((otherPlayer, i) => {
+      this.otherPlayers[i].draw(this.c);
+    });
 
     //collision tile
     this.collisionM.draw(this.c);
