@@ -98,7 +98,7 @@ export class Entity{
             let x = this.npcX - this.gp.player.playerX + 750;
             let y = this.npcY - this.gp.player.playerY + 350
             image.src = this.picture;
-    
+            
             switch(this.direction){
                 case "down":
                     if(this.spriteNum === 1){

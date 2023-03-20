@@ -41,6 +41,14 @@ export interface ServerToClientEvents {
   pedestrians: (pedestrians: [walkType]) => void;
   newPedestrians: (newPedestrians: [walkType]) => void;
   tempoBack: (tempoBack: userType) => void;
+  textOpentoField: (open: string) => void;
+  textAppear: ({
+    email,
+    text,
+  }: {
+    email: string;
+    text: string | undefined;
+  }) => void;
 }
 
 export interface ClientToServerEvents {
@@ -50,6 +58,14 @@ export interface ClientToServerEvents {
   back: (backback: string) => void;
   save: (save: string) => void;
   walk: ({ name, x, y }: walkType) => void;
+  textOpen: (open: string) => void;
+  textSubmit: ({
+    email,
+    text,
+  }: {
+    email: string;
+    text: string | undefined;
+  }) => void;
 }
 // const url:string = process.env.SERVER_URL;
 

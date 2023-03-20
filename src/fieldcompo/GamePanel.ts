@@ -66,6 +66,7 @@ export class GamePanel {
   public statusViewScene: number = 7;
   public battleScene: number = 8;
   public saveScene: number = 9;
+  public playerChattingScene: number = 10;
 
   public gameStartOver: boolean = false;
 
@@ -128,6 +129,9 @@ export class GamePanel {
 
   public pedestrians: pedestriandsType[] = [];
   public otherPlayers: OtherPlayers[] = [];
+
+  public isTextApper: boolean = false;
+  public textAppearPersonEmail: string = "";
 
   constructor(
     c: CanvasRenderingContext2D,
@@ -215,8 +219,22 @@ export class GamePanel {
         this.otherPlayers[i].npcY = data[i].y;
         this.otherPlayers[i].picture = "/img/main.png";
         this.otherPlayers[i].direction = "down";
+        this.otherPlayers[i].email = data[i].email;
       }
       // console.log(this.otherPlayers);
+    });
+
+    this.socket.on("textOpentoField", (data) => {
+      this.gameState = this.playerChattingScene;
+    });
+
+    this.socket.on("textAppear", (data) => {
+      // console.log(data, "junjun");
+      this.isTextApper = true;
+      const sameperson = this.otherPlayers.filter(
+        (element) => element.email === data.email
+      );
+      this.textAppearPersonEmail = sameperson[0].email;
     });
 
     requestAnimationFrame(this.gameloop.bind(this));

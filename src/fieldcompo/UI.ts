@@ -53,6 +53,35 @@ export class UI {
       this.makesureWaite++;
       this.drawSavemenu(c);
     }
+
+    this.drawPlayerDialog(c);
+  }
+
+  drawPlayerDialog(c: CanvasRenderingContext2D) {
+    // this.gp.otherPlayers.forEach((element) => {
+    //   if (element.isDialogAppear) {
+    //     let x = element.npcX - this.gp.player.playerX + 750;
+    //     let y = element.npcY - this.gp.player.playerY + 350;
+
+    //     c.fillStyle = "black";
+    //     c.fillRect(x, y - 100, 100, 100);
+    //   }
+    // });
+
+    if (this.gp.isTextApper) {
+      const person = this.gp.otherPlayers.filter(
+        (each) => each.email === this.gp.textAppearPersonEmail
+      )[0];
+      let x = person.npcX - this.gp.player.playerX + 750;
+      let y = person.npcY - this.gp.player.playerY + 350;
+      c.fillStyle = "black";
+      c.fillRect(x, y - 100, 100, 100);
+
+      setTimeout(() => {
+        this.gp.isTextApper = false;
+        this.gp.textAppearPersonEmail = "";
+      }, 2000);
+    }
   }
 
   drawMenu(c: CanvasRenderingContext2D) {

@@ -20,6 +20,9 @@ function Field({ socket }: socketType) {
   const [isEncount, setIsEncount] = useState<boolean>(false);
   const user = useAppSelector((state) => state.reducer.userStatusReducer);
 
+  const inputRef = useRef<null | HTMLInputElement>(null);
+  const [isAppearInput, setIsAppearInput] = useState<boolean>(false);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -50,11 +53,25 @@ function Field({ socket }: socketType) {
         const data = await res.json();
       });
     });
-
-    // socket.on("pedestrians", (data) => {
-    //   console.log(data, "pedestrian");
-    // });
   }, [socket]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "t") {
+        setIsAppearInput(true);
+        inputRef.current?.focus();
+        socket.emit("textOpen", "open");
+      }
+    });
+  }, []);
+
+  const submitText = () => {
+    console.log(inputRef.current?.value);
+    socket.emit("textSubmit", {
+      email: user.email,
+      text: inputRef.current?.value,
+    });
+  };
 
   return (
     <>
@@ -64,6 +81,20 @@ function Field({ socket }: socketType) {
         width={window.innerWidth}
         height={window.innerHeight}
       ></motion.canvas>
+      <motion.div
+        style={{ position: "absolute", zIndex: 5, top: 300, left: 500 }}
+        animate={isAppearInput ? { opacity: 1 } : { opacity: 0 }}
+      >
+        <input
+          ref={inputRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              submitText();
+            }
+          }}
+        />
+        <button onClick={submitText}>submit</button>
+      </motion.div>
     </>
   );
 }
