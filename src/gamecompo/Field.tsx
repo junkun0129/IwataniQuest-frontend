@@ -20,8 +20,9 @@ function Field({ socket }: socketType) {
   const [isEncount, setIsEncount] = useState<boolean>(false);
   const user = useAppSelector((state) => state.reducer.userStatusReducer);
 
-  const inputRef = useRef<null | HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [isAppearInput, setIsAppearInput] = useState<boolean>(false);
+  const [chat, setChat] = useState<string>("");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -56,13 +57,18 @@ function Field({ socket }: socketType) {
   }, [socket]);
 
   useEffect(() => {
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "t") {
-        setIsAppearInput(true);
-        inputRef.current?.focus();
-        socket.emit("textOpen", "open");
-      }
-    });
+    console.log(isAppearInput, "iiii");
+    if (!isAppearInput) {
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "t") {
+          setIsAppearInput(true);
+          setChat("");
+          inputRef.current?.focus();
+          socket.emit("textOpen", "open");
+          // inputRef.current?.value = null;
+        }
+      });
+    }
   }, []);
 
   const submitText = () => {
@@ -71,6 +77,9 @@ function Field({ socket }: socketType) {
       email: user.email,
       text: inputRef.current?.value,
     });
+    setIsAppearInput(false);
+    // inputRef.current?.value = "";
+    socket.emit("textOpen", "close");
   };
 
   return (
@@ -87,6 +96,8 @@ function Field({ socket }: socketType) {
       >
         <input
           ref={inputRef}
+          value={chat}
+          onChange={(e) => setChat(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               submitText();

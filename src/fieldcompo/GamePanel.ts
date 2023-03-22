@@ -132,6 +132,7 @@ export class GamePanel {
 
   public isTextApper: boolean = false;
   public textAppearPersonEmail: string = "";
+  public textAppearPersonText: string | undefined = "";
 
   constructor(
     c: CanvasRenderingContext2D,
@@ -210,9 +211,6 @@ export class GamePanel {
     // });
 
     this.socket.on("pedestrians", (data) => {
-      // console.log(data, "this is pedestriands");
-
-      // console.log(data);
       for (let i: number = 0; i < data.length; i++) {
         this.otherPlayers[i] = new OtherPlayers(this);
         this.otherPlayers[i].npcX = data[i].x;
@@ -221,11 +219,10 @@ export class GamePanel {
         this.otherPlayers[i].direction = "down";
         this.otherPlayers[i].email = data[i].email;
       }
-      // console.log(this.otherPlayers);
     });
-
     this.socket.on("textOpentoField", (data) => {
-      this.gameState = this.playerChattingScene;
+      if (data === "open") this.gameState = this.playerChattingScene;
+      if (data === "close") this.gameState = this.fieldScene;
     });
 
     this.socket.on("textAppear", (data) => {
@@ -235,6 +232,8 @@ export class GamePanel {
         (element) => element.email === data.email
       );
       this.textAppearPersonEmail = sameperson[0].email;
+      this.textAppearPersonText = data.text;
+      // console.log(sameperson[0].email);
     });
 
     requestAnimationFrame(this.gameloop.bind(this));

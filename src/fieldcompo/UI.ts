@@ -77,10 +77,15 @@ export class UI {
       c.fillStyle = "black";
       c.fillRect(x, y - 100, 100, 100);
 
+      c.fillStyle = "white";
+      c.font = "30px monospace";
+      if (this.gp.textAppearPersonText)
+        c.fillText(this.gp.textAppearPersonText, x, y);
+
       setTimeout(() => {
         this.gp.isTextApper = false;
         this.gp.textAppearPersonEmail = "";
-      }, 2000);
+      }, 1000);
     }
   }
 
