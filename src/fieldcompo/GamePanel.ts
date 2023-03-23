@@ -74,10 +74,13 @@ export class GamePanel {
   public field1: number = 0;
   public myHouse: number = 1;
   public inn: number = 2;
+  public outField: number = 3;
   public mapState: number = this.field1;
   public maps: string[] = [];
   public collisionDatas: number[][] = [];
   public mapsChange: boolean = true;
+
+  public lastDoorNum: number = 0;
 
   public whoSpeakIndex: number = 0;
   public whichSpeakIndex: number = 0;
@@ -198,17 +201,22 @@ export class GamePanel {
     }
 
     // encount;
+    const encount = this.Encounter();
     // if(encount)this.socket.emit("encount", "hit")
-    // const encount = this.Encounter();
+    // console.log(encount, this.gameState, this.mapState)
+    if (
+      encount &&
+      this.gameState !== this.battleScene &&
+      this.mapState === this.outField
+    ) {
+      this.socket.emit("encount", "hit");
+      this.gameState = this.battleScene;
+    }
 
-    // if (encount && this.gameState !== this.battleScene) {
-    //   this.socket.emit("encount", "hit");
-    //   this.gameState = this.battleScene;
-    // }
-
-    // this.socket.on("backSwitch", (data) => {
-    //   this.gameState = this.fieldScene;
-    // });
+    this.socket.on("backSwitch", (data) => {
+      this.gameState = this.fieldScene;
+      this.mapState = this.outField;
+    });
 
     this.socket.on("pedestrians", (data) => {
       for (let i: number = 0; i < data.length; i++) {
@@ -219,7 +227,10 @@ export class GamePanel {
         this.otherPlayers[i].direction = "down";
         this.otherPlayers[i].email = data[i].email;
       }
+
+      // console.log(this.otherPlayers);
     });
+
     this.socket.on("textOpentoField", (data) => {
       if (data === "open") this.gameState = this.playerChattingScene;
       if (data === "close") this.gameState = this.fieldScene;
@@ -231,6 +242,8 @@ export class GamePanel {
       const sameperson = this.otherPlayers.filter(
         (element) => element.email === data.email
       );
+
+      console.log(sameperson);
       this.textAppearPersonEmail = sameperson[0].email;
       this.textAppearPersonText = data.text;
       // console.log(sameperson[0].email);
@@ -246,7 +259,13 @@ export class GamePanel {
     this.player.draw(this.c);
     // console.log(this.otherPlayers);
     this.otherPlayers.forEach((otherPlayer, i) => {
-      this.otherPlayers[i].draw(this.c);
+      const yourIndex = this.otherPlayers.findIndex(
+        (each) => each.email === this.status.email
+      );
+
+      if (i !== yourIndex) {
+        this.otherPlayers[i].draw(this.c);
+      }
     });
 
     //collision tile

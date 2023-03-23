@@ -191,26 +191,29 @@ export class Player {
 
   public playerPosition() {
     if (this.gp.mapsChange) {
-      if (this.gp.mapState !== this.gp.field1) {
+      console.log("");
+      if (
+        this.gp.doors[this.gp.doors[this.gp.lastDoorNum].doorTo]
+          .outDirection === "up"
+      ) {
         //in room
-        const nowDoor = this.gp.doors.filter(
-          (door) => door.from === this.gp.mapState
-        );
-        console.log(nowDoor[0]);
-        this.playerX = nowDoor[0].x;
-        this.playerY = nowDoor[0].y - 50;
-      } else {
+        this.playerX =
+          this.gp.doors[this.gp.doors[this.gp.lastDoorNum].doorTo].x;
+        this.playerY =
+          this.gp.doors[this.gp.doors[this.gp.lastDoorNum].doorTo].y - 50;
+      } else if (
+        this.gp.doors[this.gp.doors[this.gp.lastDoorNum].doorTo]
+          .outDirection === "down"
+      ) {
         //go field out of room
-        const doorsInFirld = this.gp.doors.filter(
-          (door) => door.from === this.gp.mapState
+
+        this.playerX =
+          this.gp.doors[this.gp.doors[this.gp.lastDoorNum].doorTo].x;
+        this.playerY =
+          this.gp.doors[this.gp.doors[this.gp.lastDoorNum].doorTo].y + 100;
+        console.log(
+          "+lkj;klj>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         );
-        console.log(doorsInFirld, "doorinfirld");
-        const rightDoor = doorsInFirld.filter(
-          (door) => door.to === this.previousRoom
-        );
-        console.log(rightDoor, "this is right");
-        this.playerX = rightDoor[0].x;
-        this.playerY = rightDoor[0].y + 50;
       }
     }
   }

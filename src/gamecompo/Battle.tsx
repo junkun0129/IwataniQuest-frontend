@@ -94,7 +94,6 @@ function Battle({ socket }: socketType) {
   let enemycomponents: Array<JSX.Element | null> = [null, null, null];
   useEffect(() => {
     socket.on("screenSwitch", (data) => {
-      // setIsEncount(true)
       console.log("entounttttttttttt");
 
       setSceneState(appearedScene);
@@ -102,21 +101,24 @@ function Battle({ socket }: socketType) {
       fetch(`${reuseValue.serverURL}/enemy/create`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
-      }).then(async (response) => {
-        if (!response.ok) {
-          if (response.status === 400) setError("incorrect password");
-          else if (response.status === 404) setError("user doesnot exist");
-          else setError("Something went wrong :<");
-        } else {
-          const data: Array<enemyStatusType> = await response.json();
-          data.forEach((enemy, i) => {
-            enemyDispatches[i](enemy);
-            setMaxHp((pre) => [...pre, enemy.hp]);
-            setTotalExp((totalExp = totalExp + enemy.exp));
-            setSceneState(1);
-          });
-        }
-      });
+      })
+        .then(async (response) => {
+          if (!response.ok) {
+            if (response.status === 400) setError("incorrect password");
+            else if (response.status === 404) setError("user doesnot exist");
+            else setError("Something went wrong :<");
+          } else {
+            const data: Array<enemyStatusType> = await response.json();
+            data.forEach((enemy, i) => {
+              enemyDispatches[i](enemy);
+              setMaxHp((pre) => [...pre, enemy.hp]);
+              setTotalExp((totalExp = totalExp + enemy.exp));
+            });
+          }
+        })
+        .then(() => {
+          setSceneState(1);
+        });
     });
   }, [socket]);
 
@@ -161,22 +163,22 @@ function Battle({ socket }: socketType) {
       });
   }, [sceneState === enemiesActionScene]);
 
-  let isDefeatAll = enemySelectors.every(function (enemy) {
-    return enemy.hp <= 0;
-  });
+  // let isDefeatAll = enemySelectors.every(function (enemy) {
+  //   return enemy.hp <= 0;
+  // });
 
-  useNonInitialEffect(() => {
-    setSceneState(7);
-    dispatch(getExp({ exp: totalExp }));
-    isDefeatAll = false;
-    // socket.emit("back", "backback")
-  }, [isDefeatAll]);
+  // useNonInitialEffect(() => {
+  //   setSceneState(7);
+  //   dispatch(getExp({ exp: totalExp }));
+  //   isDefeatAll = false;
+  //   // socket.emit("back", "backback")
+  // }, [isDefeatAll]);
 
   useNonInitialEffect(() => {
     socket.emit("back", "backback");
     setSceneState(0);
   }, [sceneState === switchBackScene]);
-
+  console.log(sceneState, "scene State");
   return (
     <>
       <motion.div

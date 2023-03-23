@@ -11,6 +11,8 @@ export class UI {
   numberOfItem: number = 1;
   currentDialog: string = "";
 
+  playerDialogAppearNum: number = 0;
+
   constructor(gp: GamePanel) {
     this.gp = gp;
   }
@@ -82,10 +84,12 @@ export class UI {
       if (this.gp.textAppearPersonText)
         c.fillText(this.gp.textAppearPersonText, x, y);
 
-      setTimeout(() => {
-        this.gp.isTextApper = false;
+      this.playerDialogAppearNum++;
+      if (this.playerDialogAppearNum === 100) {
+        this.playerDialogAppearNum = 0;
         this.gp.textAppearPersonEmail = "";
-      }, 1000);
+        this.gp.isTextApper = false;
+      }
     }
   }
 

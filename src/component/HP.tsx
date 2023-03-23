@@ -51,6 +51,11 @@ function HP({
   const playerAT = useAppSelector(
     (state) => state.reducer.userStatusReducer.status.at
   );
+
+  const enemy1Selector = useAppSelector((state) => state.reducer.enemy1Reducer);
+  const enemy2Selector = useAppSelector((state) => state.reducer.enemy2Reducer);
+  const enemy3Selector = useAppSelector((state) => state.reducer.enemy3Reducer);
+
   const dispatch = useAppDispatch();
   const sceneStateMotionValue = useMotionValue(sceneState);
 
@@ -163,6 +168,15 @@ function HP({
     attackAnimeControl.start({});
   }, [sceneState === 5]);
 
+  console.log(enemy1Selector.hp, "enemy hp");
+  useNonInitialEffect(() => {
+    childSceneState(7);
+  }, [
+    enemy1Selector.hp === 0 &&
+      enemy2Selector.hp === 0 &&
+      enemy3Selector.hp === 0,
+  ]);
+
   //attack to enemy
   useNonInitialEffect(() => {
     attackAnimeControl
@@ -183,7 +197,7 @@ function HP({
       })
       .then(() => {
         setDragStatus(0);
-        // childSceneState(4)
+        childSceneState(4);
       });
   }, [dragEndPosition]);
 
@@ -259,9 +273,6 @@ function HP({
         }}
         onClick={() => changeState()}
         animate={attackAnimeControl}
-        // transition={dragEndPosition === enemy1Position || dragEndPosition === enemy2Position || dragEndPosition === enemy3Position
-        // ?{duration:2, times:[0,0.3,0.4,0.8,1]}
-        // :{duration:1,stiffness:50,damping:10, type:"spring"}}
         style={{
           position: "relative",
           width: "100%",
@@ -269,12 +280,15 @@ function HP({
           border: "10px solid white",
           borderRadius: "20px",
           boxSizing: "border-box",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           background: `linear-gradient(to left, black ${
             (1 - hp / mxHp) * 100
           }%, lime ${(1 - hp / mxHp) * 100}% ${(hp / mxHp) * 100}%)`,
         }}
       >
-        <motion.div
+        {/* <motion.div
           style={{
             position: "absolute",
             top: "0px",
@@ -284,19 +298,19 @@ function HP({
             width: "100%",
             height: "100%",
           }}
-        ></motion.div>
+        ></motion.div> */}
 
         <motion.h1
           style={{
-            position: "absolute",
+            // position: "absolute",
             top: "10px",
             left: "50px",
             color: "white",
             zIndex: "100",
           }}
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ delay: 1, duration: 1 }}
+          // initial={{ pathLength: 0 }}
+          // animate={{ pathLength: 1 }}
+          // transition={{ delay: 1, duration: 1 }}
         >
           {dialog}
         </motion.h1>
