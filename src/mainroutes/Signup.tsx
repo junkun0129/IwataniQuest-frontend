@@ -44,29 +44,81 @@ function Signup() {
 
   return (
     <>
-      <h1>Signup</h1>
-      <form onSubmit={submitForm}>
-        <input
-          type="text"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="text"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <input
-          type="text"
-          name="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <button type="submit">button</button>
-      </form>
-      {error && <h1>{error}</h1>}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          // backgroundColor: "red",
+        }}
+      >
+        <h1>Signup</h1>
+        <form
+          onSubmit={submitForm}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: 500,
+            height: 400,
+            justifyContent: "space-around",
+            alignItems: "center",
+            // backgroundColor: "red",
+          }}
+        >
+          <input
+            type="text"
+            name="email"
+            value={email}
+            placeholder="email"
+            onChange={(e) => setEmail(e.target.value)}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "80%",
+              height: "10%",
+              borderRadius: "20px",
+            }}
+          />
+          <input
+            type="text"
+            name="password"
+            value={password}
+            placeholder="password"
+            onChange={(e) => setPassword(e.target.value)}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "80%",
+              height: "10%",
+              borderRadius: "20px",
+            }}
+          />
+          <input
+            type="text"
+            name="name"
+            value={name}
+            placeholder="username"
+            onChange={(e) => setName(e.target.value)}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "80%",
+              height: "10%",
+              borderRadius: "20px",
+            }}
+          />
+          <button
+            style={{ width: "80%", height: "10%", borderRadius: "20px" }}
+            type="submit"
+          >
+            button
+          </button>
+        </form>
+        {error && <h1>{error}</h1>}
+      </div>
     </>
   );
 }

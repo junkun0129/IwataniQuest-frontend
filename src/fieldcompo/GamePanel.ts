@@ -291,7 +291,7 @@ export class GamePanel {
   }
 
   public Encounter(): boolean {
-    const ramdomNum: number = Math.floor(Math.random() * 1000);
+    const ramdomNum: number = Math.floor(Math.random() * 100);
 
     if (ramdomNum === 50) {
       return true;

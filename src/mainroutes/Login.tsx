@@ -60,22 +60,48 @@ function Login({ socket }: socketType) {
   return (
     <>
       {error && <h1>{error}</h1>}
-      <h1>login</h1>
-      <form onSubmit={loginsubmit}>
-        <input
-          type="text"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="text"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">button</button>
-      </form>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      >
+        <h1>login</h1>
+        <form
+          onSubmit={loginsubmit}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+            alignItems: "center",
+            width: 500,
+            height: 500,
+          }}
+        >
+          <input
+            type="text"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={{ width: "80%", height: "7%", borderRadius: "20px" }}
+          />
+          <input
+            type="text"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{ width: "80%", height: "7%", borderRadius: "20px" }}
+          />
+          <button
+            style={{ width: "80%", height: "7%", borderRadius: "20px" }}
+            type="submit"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </>
   );
 }

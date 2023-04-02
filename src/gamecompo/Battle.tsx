@@ -36,6 +36,7 @@ import {
 import { enemyStatusType } from "../store/features/enemySlice";
 import { useNonInitialEffect } from "../customhooks/useNonInitialEffect";
 import reuseValue from "../reuseValue";
+import HP2 from "../component/HP2";
 
 export type enemeyStatusType = {
   hp: number;
@@ -163,17 +164,6 @@ function Battle({ socket }: socketType) {
       });
   }, [sceneState === enemiesActionScene]);
 
-  // let isDefeatAll = enemySelectors.every(function (enemy) {
-  //   return enemy.hp <= 0;
-  // });
-
-  // useNonInitialEffect(() => {
-  //   setSceneState(7);
-  //   dispatch(getExp({ exp: totalExp }));
-  //   isDefeatAll = false;
-  //   // socket.emit("back", "backback")
-  // }, [isDefeatAll]);
-
   useNonInitialEffect(() => {
     socket.emit("back", "backback");
     setSceneState(0);
@@ -206,8 +196,10 @@ function Battle({ socket }: socketType) {
             return (
               <motion.div
                 animate={enemy.hp <= 0 ? { opacity: 0 } : { opacity: 1 }}
+                style={{ border: "black 9px solid" }}
               >
                 <div>{enemy.hp}</div>
+
                 <div
                   style={{
                     display: "flex",
@@ -245,7 +237,7 @@ function Battle({ socket }: socketType) {
           style={{ display: "flex", justifyContent: "center", zIndex: 3 }}
           className={styles.hp}
         >
-          <HP
+          {/* <HP
             dialog={dialog}
             sceneState={sceneState}
             dragX={(x) => dragX.set(x)}
@@ -255,7 +247,15 @@ function Battle({ socket }: socketType) {
             childSceneState={(s) => setSceneState(s)}
             startover={startover}
             enemyAttackNum={(n) => setWhichEnemyAt(n)}
-          ></HP>
+          ></HP> */}
+          <HP2
+            drag
+            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+            dragTransition={{ bounceStiffness: 500, bounceDamping: 20 }}
+            dragElastic={0.8}
+            sceneState={0}
+            dialog={""}
+          ></HP2>
         </div>
 
         <div className={styles.option}>

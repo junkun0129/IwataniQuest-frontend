@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mui/material": "^5.11.15",
     "@reduxjs/toolkit": "^1.9.3",
+    "@types/material-ui": "^0.21.12",
     "framer-motion": "^10.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

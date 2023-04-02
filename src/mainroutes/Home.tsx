@@ -5,10 +5,55 @@ function Home() {
   const navi = useNavigate();
   return (
     <>
-      <h1>Home</h1>
-      <h1 onClick={(e) => navi("/login")}>login</h1>
-      <h1 onClick={() => navi("/signup")}>home</h1>
-      <h1 onClick={() => navi("/game")}>home</h1>
+      <div
+        style={{
+          width: 500,
+          height: 500,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          // backgroundColor: "red",
+          flexDirection: "column",
+        }}
+      >
+        <h1>Home</h1>
+        <h1
+          style={{
+            color: "white",
+            border: "white 10px solid",
+            padding: "5%",
+            borderRadius: "20px",
+            cursor: "pointer",
+          }}
+          onClick={() => navi("/signup")}
+        >
+          sign up
+        </h1>
+        <h1
+          style={{
+            color: "white",
+            border: "white 10px solid",
+            padding: "5%",
+            borderRadius: "20px",
+            cursor: "pointer",
+          }}
+          onClick={(e) => navi("/login")}
+        >
+          login
+        </h1>
+        <h1
+          style={{
+            color: "white",
+            border: "white 10px solid",
+            padding: "5%",
+            borderRadius: "20px",
+            cursor: "pointer",
+          }}
+          onClick={() => navi("/game")}
+        >
+          game
+        </h1>
+      </div>
     </>
   );
 }
