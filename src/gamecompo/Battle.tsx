@@ -254,7 +254,7 @@ function Battle({ socket }: socketType) {
             dragTransition={{ bounceStiffness: 500, bounceDamping: 20 }}
             dragElastic={0.8}
             sceneState={0}
-            dialog={""}
+            dialog={dialog}
           ></HP2>
         </div>
 

@@ -2,7 +2,7 @@ const localhost = "http://localhost:8080";
 const renderURL = "https://iwataniquest-backend.onrender.com";
 
 const reuseValue = {
-  serverURL: localhost,
+  serverURL: renderURL,
 };
 
 export default reuseValue;
