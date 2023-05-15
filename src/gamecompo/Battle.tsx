@@ -11,7 +11,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { socketType } from "./Field";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Genkiman from "../enemycompo/Genkiman";
 import { star } from "./SvgPath";
 import Hentaiyou from "../enemycompo/Hentaiyou";
@@ -57,18 +57,37 @@ function Battle({ socket }: socketType) {
   const afterBattleScene = 7;
   const switchBackScene = 8;
   const [sceneState, setSceneState] = useState<number>(0);
-
   const userAt = useAppSelector(
     (state) => state.reducer.userStatusReducer.status.at
   );
   const user = useAppSelector((state) => state.reducer.userStatusReducer);
+
+  const BoxRef1 = useRef<HTMLDivElement | null>(null);
+  const BoxRef2 = useRef<HTMLDivElement | null>(null);
+  const BoxRef3 = useRef<HTMLDivElement | null>(null);
+
+  const BoxRefs = [BoxRef1, BoxRef2, BoxRef3];
 
   const dispatch = useAppDispatch();
   const enemy1Selector = useAppSelector((state) => state.reducer.enemy1Reducer);
   const enemy2Selector = useAppSelector((state) => state.reducer.enemy2Reducer);
   const enemy3Selector = useAppSelector((state) => state.reducer.enemy3Reducer);
   const enemySelectors = [enemy1Selector, enemy2Selector, enemy3Selector];
+  const enemyFieldBottomLine = useRef(0);
+  const [enemyCoordinates, setEnemyCoordinates] = useState(
+    enemySelectors.map((enemy, i) => {
+      return {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+      };
+    })
+  );
+  const attackAreaBorder = useRef();
   let [totalExp, setTotalExp] = useState(0);
+
+  const [shapeState, setShapeState] = useState(0);
 
   const [error, setError] = useState("");
   const appearDialog = "Enemy appeared!!";
@@ -78,6 +97,7 @@ function Battle({ socket }: socketType) {
   const afterEnemyActionDialog = "you got 4 damage";
   const BattleResultDialog = `${user.name} got ${totalExp} exp`;
 
+  const HpBarControl = useAnimationControls();
   const enemyDispatches = [
     (e: enemyStatusType) => dispatch(createEnemy1(e)),
     (e: enemyStatusType) => dispatch(createEnemy2(e)),
@@ -149,7 +169,62 @@ function Battle({ socket }: socketType) {
       default:
         break;
     }
+    BoxRefs.forEach((ref, i) => {
+      if (ref) {
+        setEnemyCoordinates(
+          enemyCoordinates.map((code, indexCode) => {
+            if (indexCode === i) {
+              return {
+                left: ref.current?.getBoundingClientRect().left,
+                right: ref.current?.getBoundingClientRect().right,
+                top: ref.current?.getBoundingClientRect().top,
+                bottom: ref.current?.getBoundingClientRect().bottom,
+              };
+            } else {
+              return code;
+            }
+          })
+        );
+      }
+    });
+    console.log(enemyCoordinates, "cooooooooo");
   }, [sceneState]);
+
+  //mouse move position
+  let X = useMotionValue(0);
+  let Y = useMotionValue(0);
+  const swordShape = 1;
+  useMotionValueEvent(X || Y, "change", () => {
+    if (Y.get() < enemyFieldBottomLine.current) {
+      setShapeState(swordShape);
+    } else {
+      setShapeState(0);
+    }
+  });
+  //mouse end position
+  const dragEndX = useMotionValue(0);
+  const dragEndY = useMotionValue(0);
+
+  useMotionValueEvent(dragEndX || dragEndY, "change", () => {
+    enemyCoordinates.forEach((coordinate, i) => {
+      if (
+        coordinate.left < dragEndX.get() &&
+        dragEndX.get() < coordinate.right &&
+        coordinate.top < dragEndY.get() &&
+        dragEndY.get() < coordinate.bottom
+      ) {
+      }
+      if (
+        coordinate.left <= dragEndX.get() &&
+        dragEndX.get() < coordinate.right
+      ) {
+      }
+    });
+    const code = enemyCoordinates[0];
+    if (code.right > dragEndX.get()) {
+      console.log("enemey");
+    }
+  });
 
   const enemyControll = useAnimationControls();
   useNonInitialEffect(() => {
@@ -168,7 +243,6 @@ function Battle({ socket }: socketType) {
     socket.emit("back", "backback");
     setSceneState(0);
   }, [sceneState === switchBackScene]);
-  console.log(sceneState, "scene State");
   return (
     <>
       <motion.div
@@ -188,7 +262,13 @@ function Battle({ socket }: socketType) {
         }
         className={styles.innnerBattleBox}
       >
-        <div className={styles.enemeyField}>
+        <div
+          className={styles.enemeyField}
+          ref={(el) => {
+            if (!el) return;
+            enemyFieldBottomLine.current = el.getBoundingClientRect().bottom;
+          }}
+        >
           {enemySelectors.map((enemy, i) => {
             const enemyCompo = enemyArr.filter(
               (e) => e.type.name === enemy.name
@@ -197,6 +277,7 @@ function Battle({ socket }: socketType) {
               <motion.div
                 animate={enemy.hp <= 0 ? { opacity: 0 } : { opacity: 1 }}
                 style={{ border: "black 9px solid" }}
+                ref={BoxRefs[i]}
               >
                 <div>{enemy.hp}</div>
 
@@ -234,7 +315,18 @@ function Battle({ socket }: socketType) {
         </div>
 
         <div
-          style={{ display: "flex", justifyContent: "center", zIndex: 3 }}
+          ref={(el) => {
+            if (!el) return;
+            console.log(el.getBoundingClientRect().width);
+          }}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 3,
+            width: "100%",
+            height: "35%",
+          }}
           className={styles.hp}
         >
           {/* <HP
@@ -253,8 +345,20 @@ function Battle({ socket }: socketType) {
             dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
             dragTransition={{ bounceStiffness: 500, bounceDamping: 20 }}
             dragElastic={0.8}
-            sceneState={0}
+            onDrag={(event, info) => {
+              X.set(info.point.x);
+              Y.set(info.point.y);
+            }}
+            onDragEnd={(event, info) => {
+              dragEndX.set(info.point.x);
+              dragEndY.set(info.point.y);
+            }}
+            sceneState={sceneState}
             dialog={dialog}
+            shapeState={shapeState}
+            whileDrag={{ scale: 0.4 }}
+            animate={HpBarControl}
+            onTap={() => setSceneState(sceneState + 1)}
           ></HP2>
         </div>
 
