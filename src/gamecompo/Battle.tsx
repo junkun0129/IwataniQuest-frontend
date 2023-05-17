@@ -42,6 +42,8 @@ export type enemeyStatusType = {
   hp: number;
   at: number;
 };
+
+type Coordinate = { left: number; right: number; top: number; bottom: number };
 function Battle({ socket }: socketType) {
   // const [isEncount, setIsEncount] = useState<boolean>(false);
   const [enemyDragState, setEnemyDragState] = useState(0);
@@ -74,15 +76,8 @@ function Battle({ socket }: socketType) {
   const enemy3Selector = useAppSelector((state) => state.reducer.enemy3Reducer);
   const enemySelectors = [enemy1Selector, enemy2Selector, enemy3Selector];
   const enemyFieldBottomLine = useRef(0);
-  const [enemyCoordinates, setEnemyCoordinates] = useState(
-    enemySelectors.map((enemy, i) => {
-      return {
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-      };
-    })
+  const [enemyCoordinates, setEnemyCoordinates] = useState<Coordinate[] | null>(
+    null
   );
   const attackAreaBorder = useRef();
   let [totalExp, setTotalExp] = useState(0);
@@ -169,25 +164,27 @@ function Battle({ socket }: socketType) {
       default:
         break;
     }
-    BoxRefs.forEach((ref, i) => {
-      if (ref) {
-        setEnemyCoordinates(
-          enemyCoordinates.map((code, indexCode) => {
-            if (indexCode === i) {
-              return {
-                left: ref.current?.getBoundingClientRect().left,
-                right: ref.current?.getBoundingClientRect().right,
-                top: ref.current?.getBoundingClientRect().top,
-                bottom: ref.current?.getBoundingClientRect().bottom,
-              };
-            } else {
-              return code;
-            }
-          })
-        );
-      }
+
+    const coodinatesBuffer = BoxRefs.map((ref, i) => {
+      return {
+        left: ref.current?.getBoundingClientRect().left,
+        right: ref.current?.getBoundingClientRect().right,
+        top: ref.current?.getBoundingClientRect().top,
+        bottom: ref.current?.getBoundingClientRect().bottom,
+      };
     });
+    setEnemyCoordinates(coodinatesBuffer);
     console.log(enemyCoordinates, "cooooooooo");
+    console.log(
+      BoxRefs.map((ref, i) => {
+        return {
+          left: ref.current?.getBoundingClientRect().left,
+          right: ref.current?.getBoundingClientRect().right,
+          top: ref.current?.getBoundingClientRect().top,
+          bottom: ref.current?.getBoundingClientRect().bottom,
+        };
+      })
+    );
   }, [sceneState]);
 
   //mouse move position
@@ -213,6 +210,7 @@ function Battle({ socket }: socketType) {
         coordinate.top < dragEndY.get() &&
         dragEndY.get() < coordinate.bottom
       ) {
+        console.log("end");
       }
       if (
         coordinate.left <= dragEndX.get() &&
