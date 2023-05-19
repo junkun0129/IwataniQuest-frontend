@@ -76,9 +76,7 @@ function Battle({ socket }: socketType) {
   const enemy3Selector = useAppSelector((state) => state.reducer.enemy3Reducer);
   const enemySelectors = [enemy1Selector, enemy2Selector, enemy3Selector];
   const enemyFieldBottomLine = useRef(0);
-  const [enemyCoordinates, setEnemyCoordinates] = useState<Coordinate[] | null>(
-    null
-  );
+  const [enemyCoordinates, setEnemyCoordinates] = useState<any>(null);
   const attackAreaBorder = useRef();
   let [totalExp, setTotalExp] = useState(0);
 
@@ -87,7 +85,7 @@ function Battle({ socket }: socketType) {
   const [error, setError] = useState("");
   const appearDialog = "Enemy appeared!!";
   const yourturnDialog = "Your turn";
-  const enemyturnDialog = "enemy attacked you!";
+  const [enemyturnDialog, setEnemyturnDialog] = useState("");
   const youractionDialog = "attack to enemy";
   const afterEnemyActionDialog = "you got 4 damage";
   const BattleResultDialog = `${user.name} got ${totalExp} exp`;
@@ -201,43 +199,93 @@ function Battle({ socket }: socketType) {
   //mouse end position
   const dragEndX = useMotionValue(0);
   const dragEndY = useMotionValue(0);
-
+  const [chosenNum, setChosenNum] = useState<null | number>(null);
   useMotionValueEvent(dragEndX || dragEndY, "change", () => {
-    enemyCoordinates.forEach((coordinate, i) => {
-      if (
-        coordinate.left < dragEndX.get() &&
-        dragEndX.get() < coordinate.right &&
-        coordinate.top < dragEndY.get() &&
-        dragEndY.get() < coordinate.bottom
-      ) {
-        console.log("end");
-      }
-      if (
-        coordinate.left <= dragEndX.get() &&
-        dragEndX.get() < coordinate.right
-      ) {
-      }
-    });
-    const code = enemyCoordinates[0];
-    if (code.right > dragEndX.get()) {
-      console.log("enemey");
+    if (sceneState === yourTurnScene) {
+      enemyCoordinates &&
+        enemyCoordinates.forEach((coordinate, i) => {
+          if (
+            coordinate.left < dragEndX.get() &&
+            dragEndX.get() < coordinate.right &&
+            coordinate.top < dragEndY.get() &&
+            dragEndY.get() < coordinate.bottom
+          ) {
+            setChosenNum(i);
+          }
+        });
     }
   });
 
-  const enemyControll = useAnimationControls();
+  //attack from enemies
+  const enemyControll1 = useAnimationControls();
+  const enemyControll2 = useAnimationControls();
+  const enemyControll3 = useAnimationControls();
+  const enemyControlls = [enemyControll1, enemyControll2, enemyControll3];
+  const [activeEnemyNum, setActiveEnemyNum] = useState(0);
+
   useNonInitialEffect(() => {
-    const ramdom = Math.floor(Math.random() * 3);
-    enemyControll
+    setActiveEnemyNum(Math.floor(Math.random() * 3));
+    setEnemyturnDialog(
+      `${enemySelectors[activeEnemyNum].name} is about attack you`
+    );
+  }, [sceneState === enemiesTurnScene]);
+
+  useNonInitialEffect(() => {
+    enemyControlls[activeEnemyNum]
       .start({
         scale: [2, 2, 2, 1, 1],
         rotate: [0, 0, 50, -50, 0],
       })
       .then(() => {
-        getAttackFromEnemy({ attack: enemySelectors[ramdom].at });
+        dispatch(
+          getAttackFromEnemy({ attack: enemySelectors[activeEnemyNum].at })
+        );
+      })
+      .then(() => {
+        if (
+          enemySelectors
+            .map((enemy, i) => {
+              return enemy.hp;
+            })
+            .every((hp) => hp <= 0)
+        ) {
+          setSceneState(afterBattleScene);
+        } else {
+          setSceneState(yourTurnScene);
+        }
       });
   }, [sceneState === enemiesActionScene]);
 
+  //ontap hpBar
+  const hpBarOnTap = () => {
+    if (sceneState === appearedScene || sceneState === enemiesTurnScene) {
+      setSceneState(sceneState + 1);
+    }
+    console.log(sceneState);
+    if (sceneState === afterBattleScene) {
+      let allExp = 0;
+      enemySelectors.forEach((enemy) => {
+        allExp += enemy.exp;
+      });
+      setSceneState(switchBackScene);
+      dispatch(getExp({ exp: allExp }));
+    }
+
+    // //defeted all enemy
+    if (
+      enemySelectors
+        .map((enemy, i) => {
+          return enemy.hp;
+        })
+        .every((hp) => hp <= 0)
+    ) {
+      setSceneState(switchBackScene);
+    }
+  };
+
+  //back to the field
   useNonInitialEffect(() => {
+    console.log("backcccccc");
     socket.emit("back", "backback");
     setSceneState(0);
   }, [sceneState === switchBackScene]);
@@ -245,16 +293,16 @@ function Battle({ socket }: socketType) {
     <>
       <motion.div
         transition={
-          sceneState === enemiesTurnScene
+          sceneState === enemiesActionScene
             ? {
                 times: [0, 0.5, 0.6, 0.7, 1],
                 duration: 0.5,
-                delay: 2,
+                delay: 1,
               }
             : {}
         }
         animate={
-          sceneState === enemiesTurnScene && {
+          sceneState === enemiesActionScene && {
             rotate: [0, -5, 10, -5, 0],
           }
         }
@@ -306,7 +354,9 @@ function Battle({ socket }: socketType) {
                     }}
                   ></div>
                 </div>
-                <motion.div animate={enemyControll}>{enemyCompo}</motion.div>
+                <motion.div animate={enemyControlls[i]}>
+                  {enemyCompo}
+                </motion.div>
               </motion.div>
             );
           })}
@@ -351,12 +401,16 @@ function Battle({ socket }: socketType) {
               dragEndX.set(info.point.x);
               dragEndY.set(info.point.y);
             }}
+            whileDrag={{ scale: 0.4 }}
+            animate={HpBarControl}
+            onTap={hpBarOnTap}
+            //Props
             sceneState={sceneState}
             dialog={dialog}
             shapeState={shapeState}
-            whileDrag={{ scale: 0.4 }}
-            animate={HpBarControl}
-            onTap={() => setSceneState(sceneState + 1)}
+            chosenNum={chosenNum}
+            setSceneState={(state) => setSceneState(state)}
+            setChosenNum={(num) => setChosenNum(num)}
           ></HP2>
         </div>
 
@@ -416,7 +470,8 @@ function Battle({ socket }: socketType) {
         >
           ;alskj
         </button>
-        <h1>{sceneState}</h1>
+        <h1>chosenNum : {chosenNum}</h1>
+        <h1>sceneState : {sceneState}</h1>
       </motion.div>
     </>
   );

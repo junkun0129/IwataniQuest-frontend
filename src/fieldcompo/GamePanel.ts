@@ -165,14 +165,15 @@ export class GamePanel {
 
     // this.socket.emit("oi", this.input)
 
-    this.status = JSON.parse(
-      getItemFromLocalState("persist:root").userStatusReducer
-    );
-
     this.gameloop();
   }
 
   public gameloop(): void {
+    //statusfetch
+    this.status = JSON.parse(
+      getItemFromLocalState("persist:root").userStatusReducer
+    );
+
     //map create
     this.collisionM.mapArrayCreate();
 
@@ -201,16 +202,16 @@ export class GamePanel {
     }
 
     // encount;
-    const encount = this.Encounter();
-    // if(encount)this.socket.emit("encount", "hit")
-    // console.log(encount, this.gameState, this.mapState)
-    if (
-      encount &&
-      this.gameState !== this.battleScene &&
-      this.mapState === this.outField
-    ) {
-      this.socket.emit("encount", "hit");
-      this.gameState = this.battleScene;
+    if (this.gameState === this.fieldScene) {
+      const encount = this.Encounter();
+      if (
+        encount &&
+        this.gameState !== this.battleScene &&
+        this.mapState === this.outField
+      ) {
+        this.socket.emit("encount", "hit");
+        this.gameState = this.battleScene;
+      }
     }
 
     this.socket.on("backSwitch", (data) => {
@@ -291,7 +292,7 @@ export class GamePanel {
   }
 
   public Encounter(): boolean {
-    const ramdomNum: number = Math.floor(Math.random() * 100);
+    const ramdomNum: number = Math.floor(Math.random() * 500);
 
     if (ramdomNum === 50) {
       return true;
