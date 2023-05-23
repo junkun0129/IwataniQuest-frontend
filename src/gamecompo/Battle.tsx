@@ -11,7 +11,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { socketType } from "./Field";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Genkiman from "../enemycompo/Genkiman";
 import { star } from "./SvgPath";
 import Hentaiyou from "../enemycompo/Hentaiyou";
@@ -48,11 +48,12 @@ function Battle({ socket }: socketType) {
   // const [isEncount, setIsEncount] = useState<boolean>(false);
   const [enemyDragState, setEnemyDragState] = useState(0);
   const [whichEnemyAt, setWhichEnemyAt] = useState(0);
-
+  const [enemyAttackCount, setEnemyAttackCount] = useState(0);
   const battleOffScene = 0;
   const appearedScene = 1;
   const yourTurnScene = 2;
   const yourActionScene = 3;
+  const afteryourActionScene = 9;
   const enemiesTurnScene = 4;
   const enemiesActionScene = 5;
   const afterEnemyActionScene = 6;
@@ -87,7 +88,7 @@ function Battle({ socket }: socketType) {
   const yourturnDialog = "Your turn";
   const [enemyturnDialog, setEnemyturnDialog] = useState("");
   const youractionDialog = "attack to enemy";
-  const afterEnemyActionDialog = "you got 4 damage";
+  const [afterEnemyActionDialog, setAfterEnemyActionDialog] = useState("");
   const BattleResultDialog = `${user.name} got ${totalExp} exp`;
 
   const HpBarControl = useAnimationControls();
@@ -221,56 +222,61 @@ function Battle({ socket }: socketType) {
   const enemyControll2 = useAnimationControls();
   const enemyControll3 = useAnimationControls();
   const enemyControlls = [enemyControll1, enemyControll2, enemyControll3];
-  const [activeEnemyNum, setActiveEnemyNum] = useState(0);
+  const [activeEnemyNum, setActiveEnemyNum] = useState<number | null>(null);
 
   useNonInitialEffect(() => {
     setActiveEnemyNum(Math.floor(Math.random() * 3));
-    setEnemyturnDialog(
-      `${enemySelectors[activeEnemyNum].name} is about attack you`
-    );
-  }, [sceneState === enemiesTurnScene]);
+    console.log(";lkj");
+  }, [sceneState === yourTurnScene]);
 
   useNonInitialEffect(() => {
-    enemyControlls[activeEnemyNum]
-      .start({
-        scale: [2, 2, 2, 1, 1],
-        rotate: [0, 0, 50, -50, 0],
-      })
-      .then(() => {
-        dispatch(
-          getAttackFromEnemy({ attack: enemySelectors[activeEnemyNum].at })
-        );
-      })
-      .then(() => {
-        if (
-          enemySelectors
-            .map((enemy, i) => {
-              return enemy.hp;
-            })
-            .every((hp) => hp <= 0)
-        ) {
-          setSceneState(afterBattleScene);
-        } else {
-          setSceneState(yourTurnScene);
-        }
-      });
+    if (activeEnemyNum) {
+      setEnemyturnDialog(
+        `${enemySelectors[activeEnemyNum].name} is about attack you`
+      );
+      setAfterEnemyActionDialog(
+        `you got ${enemySelectors[activeEnemyNum].at} damage`
+      );
+    }
+  }, [activeEnemyNum]);
+
+  useNonInitialEffect(() => {
+    if (activeEnemyNum) {
+      enemyControlls[activeEnemyNum]
+        .start({
+          scale: [2, 2, 2, 1, 1],
+          rotate: [0, 0, 50, -50, 0],
+        })
+        .then(() => {
+          if (enemyAttackCount === 0) {
+            setEnemyAttackCount((pre) => pre + 1);
+            dispatch(
+              getAttackFromEnemy({ attack: enemySelectors[activeEnemyNum].at })
+            );
+          }
+        })
+        .then(() => {
+          setSceneState(afterEnemyActionScene);
+        });
+    }
   }, [sceneState === enemiesActionScene]);
 
   //ontap hpBar
+  const [isActionEnd, setIsActionEnd] = useState(false);
   const hpBarOnTap = () => {
     if (sceneState === appearedScene || sceneState === enemiesTurnScene) {
       setSceneState(sceneState + 1);
     }
-    console.log(sceneState);
-    if (sceneState === afterBattleScene) {
-      let allExp = 0;
-      enemySelectors.forEach((enemy) => {
-        allExp += enemy.exp;
-      });
-      setSceneState(switchBackScene);
-      dispatch(getExp({ exp: allExp }));
+
+    if (sceneState === afterEnemyActionScene) {
+      setEnemyAttackCount(0);
+      setSceneState(yourTurnScene);
     }
 
+    if (isActionEnd) {
+      setIsActionEnd(false);
+      setSceneState(enemiesTurnScene);
+    }
     // //defeted all enemy
     if (
       enemySelectors
@@ -279,7 +285,16 @@ function Battle({ socket }: socketType) {
         })
         .every((hp) => hp <= 0)
     ) {
+      setSceneState(afterBattleScene);
+    }
+
+    if (sceneState === afterBattleScene) {
+      let allExp = 0;
+      enemySelectors.forEach((enemy) => {
+        allExp += enemy.exp;
+      });
       setSceneState(switchBackScene);
+      dispatch(getExp({ exp: allExp }));
     }
   };
 
@@ -409,7 +424,7 @@ function Battle({ socket }: socketType) {
             dialog={dialog}
             shapeState={shapeState}
             chosenNum={chosenNum}
-            setSceneState={(state) => setSceneState(state)}
+            isActionEnd={(is) => setIsActionEnd(is)}
             setChosenNum={(num) => setChosenNum(num)}
           ></HP2>
         </div>

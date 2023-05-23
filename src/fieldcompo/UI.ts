@@ -77,14 +77,36 @@ export class UI {
       let x = person.npcX - this.gp.player.playerX + 750;
       let y = person.npcY - this.gp.player.playerY + 350;
       c.fillStyle = "black";
-      c.fillRect(x, y - 100, 100, 100);
+      if (this.gp.textAppearPersonText !== undefined)
+        c.fillRect(
+          x - this.gp.textAppearPersonText.length * 10,
+          y - 100,
+          this.gp.textAppearPersonText?.length * 20,
+          100
+        );
+
+      c.strokeStyle = "white";
+      c.lineJoin = "bevel";
+      c.lineWidth = 5;
+      if (this.gp.textAppearPersonText !== undefined)
+        c.strokeRect(
+          x - this.gp.textAppearPersonText?.length * 10,
+          y - 100,
+          this.gp.textAppearPersonText?.length * 20,
+          100
+        );
 
       c.fillStyle = "white";
       c.font = "30px monospace";
       if (this.gp.textAppearPersonText)
-        c.fillText(this.gp.textAppearPersonText, x, y);
+        c.fillText(
+          this.gp.textAppearPersonText,
+          x - this.gp.textAppearPersonText.length * 8,
+          y - 30
+        );
 
       this.playerDialogAppearNum++;
+
       if (this.playerDialogAppearNum === 100) {
         this.playerDialogAppearNum = 0;
         this.gp.textAppearPersonEmail = "";
@@ -198,6 +220,25 @@ export class UI {
       statusMenuX + 390,
       statusMenuY + 320
     );
+
+    //exp gage
+    const gageMaxLength = 400;
+    console.log(this.gp.status.status.requireExp);
+    c.strokeStyle = "white";
+    c.lineJoin = "bevel";
+    c.lineWidth = 5;
+    c.strokeRect(statusMenuX + 610, statusMenuY + 290, gageMaxLength, 30);
+
+    c.fillStyle = "blue";
+    const requireExp = this.gp.status.status.requireExp;
+    const exp = this.gp.status.status.exp;
+    const gageLength = (exp / requireExp) * gageMaxLength;
+    c.fillRect(statusMenuX + 612, statusMenuY + 293, gageLength, 25);
+    c.fillStyle = "white";
+    c.font = "20px monospace";
+    c.fillText(`${requireExp - exp}exp to next level`, 950, 320);
+
+    c.font = "40px monospace";
     c.fillText(
       `hp: ${this.gp.status.status.hp}`,
       statusMenuX + 390,

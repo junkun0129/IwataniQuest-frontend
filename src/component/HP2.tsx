@@ -18,7 +18,7 @@ type Props = {
   dialog: string;
   shapeState: number;
   chosenNum: number | null;
-  setSceneState: (state: number) => void;
+  isActionEnd: (is: boolean) => void;
   setChosenNum: (num: number | null) => void;
 };
 const swordStyle = {
@@ -42,7 +42,7 @@ const HP2 = React.forwardRef(
       dialog,
       shapeState,
       chosenNum,
-      setSceneState,
+      isActionEnd,
       setChosenNum,
     }: Props,
     ref: React.Ref<HTMLDivElement>
@@ -94,7 +94,7 @@ const HP2 = React.forwardRef(
             },
           })
           .then((data) => {
-            dispatch(atackEnemies[chosenNum]({ atack: 20 }));
+            dispatch(atackEnemies[chosenNum]({ atack: 10 }));
           })
           .then((data) => {
             boxControll.start({
@@ -108,7 +108,7 @@ const HP2 = React.forwardRef(
           })
           .then((data) => {
             setChosenNum(null);
-            setSceneState(4);
+            isActionEnd(true);
           });
       }
     }, [chosenNum]);

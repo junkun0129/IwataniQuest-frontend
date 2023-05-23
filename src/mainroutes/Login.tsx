@@ -32,7 +32,6 @@ function Login({ socket }: socketType) {
         } else {
           console.log(response.ok);
           const data = await response.json();
-
           userStatusDispach(
             createUser({
               userId: data.userId,
@@ -41,6 +40,7 @@ function Login({ socket }: socketType) {
               status: {
                 at: data.status.at,
                 exp: data.status.exp,
+                requireExp: data.status.requireExp,
                 hp: data.status.hp,
                 maxmumHp: data.status.maxmumHp,
                 level: data.status.level,

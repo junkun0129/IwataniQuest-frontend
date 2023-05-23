@@ -16,8 +16,6 @@ function Game({ socket }: socketType) {
     (state) => state.reducer.userStatusReducer
   );
 
-  console.log(userStatuSelector);
-
   useEffect(() => {
     socket.on("screenSwitch", async (data) => {
       setBattleMode(true);

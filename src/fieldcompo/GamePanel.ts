@@ -23,6 +23,7 @@ type statusType = {
   status: {
     at: number;
     exp: number;
+    requireExp: number;
     hp: number;
     level: number;
   };
@@ -42,6 +43,7 @@ const damiStatus = {
   status: {
     at: 0,
     exp: 0,
+    requireExp: 0,
     hp: 0,
     level: 0,
   },
@@ -292,7 +294,7 @@ export class GamePanel {
   }
 
   public Encounter(): boolean {
-    const ramdomNum: number = Math.floor(Math.random() * 500);
+    const ramdomNum: number = Math.floor(Math.random() * 100);
 
     if (ramdomNum === 50) {
       return true;
