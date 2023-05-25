@@ -77,7 +77,8 @@ export class GamePanel {
   public myHouse: number = 1;
   public inn: number = 2;
   public outField: number = 3;
-  public mapState: number = this.field1;
+  public firstVillage: number = 4;
+  public mapState: number = this.firstVillage;
   public maps: string[] = [];
   public collisionDatas: number[][] = [];
   public mapsChange: boolean = true;

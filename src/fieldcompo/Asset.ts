@@ -163,13 +163,13 @@ export class Asset {
     this.gp.doors[4] = new Doors(
       this.gp,
       4,
-      2741,
+      2601,
       2434,
-      3,
+      4,
       1,
       "/img/bash1.png",
       true,
-      this.gp.field1,
+      this.gp.firstVillage,
       5,
       "up"
     );
@@ -214,6 +214,7 @@ export class Asset {
     this.gp.maps[this.gp.myHouse] = "/img/myHouse.png";
     this.gp.maps[this.gp.inn] = "/img/stay.png";
     this.gp.maps[this.gp.outField] = "/img/outField.png";
+    this.gp.maps[this.gp.firstVillage] = "/img/startVillage.png";
   }
 
   draw(c: CanvasRenderingContext2D): void {
@@ -251,7 +252,7 @@ export class Asset {
 
   setCollisions(): void {
     this.gp.collisionDatas[this.gp.field1] = mapJson.bigCity;
-
+    this.gp.collisionDatas[this.gp.firstVillage] = mapJson.firstVillage;
     this.gp.collisionDatas[this.gp.myHouse] = [
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
