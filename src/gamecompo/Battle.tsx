@@ -37,6 +37,7 @@ import { enemyStatusType } from "../store/features/enemySlice";
 import { useNonInitialEffect } from "../customhooks/useNonInitialEffect";
 import reuseValue from "../reuseValue";
 import HP2 from "../component/HP2";
+import Hukurou from "../enemycompo/Hukurou";
 
 export type enemeyStatusType = {
   hp: number;
@@ -105,7 +106,7 @@ function Battle({ socket }: socketType) {
   const [drag, setDrag] = useState(0);
   const [MaxHp, setMaxHp] = useState<Array<number>>([]);
 
-  const enemyArr = [<Genkiman />, <Hentaiyou />];
+  const enemyArr = [<Genkiman />, <Hentaiyou />, <Hukurou />];
   let enemycomponents: Array<JSX.Element | null> = [null, null, null];
   useEffect(() => {
     socket.on("screenSwitch", (data) => {

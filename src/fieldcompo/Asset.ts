@@ -163,7 +163,7 @@ export class Asset {
     this.gp.doors[4] = new Doors(
       this.gp,
       4,
-      2601,
+      2651,
       2434,
       4,
       1,
@@ -185,6 +185,58 @@ export class Asset {
       this.gp.outField,
       4,
       "down"
+    );
+    this.gp.doors[6] = new Doors(
+      this.gp,
+      6,
+      1810,
+      1686,
+      2,
+      1,
+      "/img/bash1.png",
+      true,
+      this.gp.outField,
+      7,
+      "down"
+    );
+    this.gp.doors[7] = new Doors(
+      this.gp,
+      7,
+      2742,
+      2376,
+      4,
+      1,
+      "/img/bash1.png",
+      true,
+      this.gp.field1,
+      6,
+      "up"
+    );
+    this.gp.doors[8] = new Doors(
+      this.gp,
+      8,
+      1650,
+      1698,
+      1,
+      1,
+      "/img/bash1.png",
+      true,
+      this.gp.firstVillage,
+      9,
+      "down"
+    );
+    this.gp.doors[9] = new Doors(
+      this.gp,
+      9,
+      1993,
+      1901,
+      4,
+      1,
+      "/img/bash1.png",
+      true,
+      this.gp.yourHouse,
+      8,
+      "up"
     );
   }
 
@@ -215,6 +267,7 @@ export class Asset {
     this.gp.maps[this.gp.inn] = "/img/stay.png";
     this.gp.maps[this.gp.outField] = "/img/outField.png";
     this.gp.maps[this.gp.firstVillage] = "/img/startVillage.png";
+    this.gp.maps[this.gp.yourHouse] = "img/yourHouse.png";
   }
 
   draw(c: CanvasRenderingContext2D): void {
@@ -357,5 +410,6 @@ export class Asset {
     this.gp.collisionDatas[this.gp.inn] = mapJson.innBigCity;
 
     this.gp.collisionDatas[this.gp.outField] = mapJson.outFiled;
+    this.gp.collisionDatas[this.gp.yourHouse] = mapJson.yourHouse;
   }
 }
