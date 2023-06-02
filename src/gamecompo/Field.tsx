@@ -8,8 +8,9 @@ import { GamePanel } from "../fieldcompo/GamePanel";
 import { motion } from "framer-motion";
 import styles from "./Field.module.scss";
 import { useNonInitialEffect } from "../customhooks/useNonInitialEffect";
-import { useAppSelector } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../store/store";
 import reuseValue from "../reuseValue";
+import { afterSave, createUser } from "../store/features/userStatuSlice";
 
 export type socketType = {
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;
@@ -23,6 +24,7 @@ function Field({ socket }: socketType) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isAppearInput, setIsAppearInput] = useState<boolean>(false);
   const [chat, setChat] = useState<string>("");
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -48,13 +50,28 @@ function Field({ socket }: socketType) {
           at: user.status.at,
           exp: user.status.exp,
           hp: user.status.hp,
+          x: data.x,
+          y: data.y,
+          mapState: data.mapState,
         }),
         headers: { "Content-Type": "application/json" },
       }).then(async (res) => {
         const data = await res.json();
+        socket.emit("saveDone", {
+          x: data.x,
+          y: data.y,
+          mapState: data.mapState,
+        });
+
+        console.log(data.mapState);
+        dispatch(afterSave({ x: data.x, y: data.y, mapState: data.mapState }));
       });
     });
   }, [socket]);
+
+  useEffect(() => {
+    console.log(";lkj");
+  }, []);
 
   useEffect(() => {
     console.log(isAppearInput, "iiii");

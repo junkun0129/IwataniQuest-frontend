@@ -29,7 +29,7 @@ export class Player {
   constructor(gp: GamePanel) {
     this.gp = gp;
     this.direction = "down";
-    this.playerXOriginal = 3000;
+    this.playerXOriginal = 2000;
     this.playerYOriginal = 2000;
     this.playerX = this.playerXOriginal;
     this.playerY = this.playerYOriginal;

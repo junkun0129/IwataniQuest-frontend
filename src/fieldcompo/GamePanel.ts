@@ -26,6 +26,9 @@ type statusType = {
     requireExp: number;
     hp: number;
     level: number;
+    x: number;
+    y: number;
+    mapState: number;
   };
   userId: string;
 };
@@ -46,6 +49,9 @@ const damiStatus = {
     requireExp: 0,
     hp: 0,
     level: 0,
+    x: 0,
+    y: 0,
+    mapState: 0,
   },
   userId: "",
 };
@@ -79,7 +85,7 @@ export class GamePanel {
   public outField: number = 3;
   public firstVillage: number = 4;
   public yourHouse: number = 5;
-  public mapState: number = this.firstVillage;
+  public mapState: number = this.yourHouse;
   public maps: string[] = [];
   public collisionDatas: number[][] = [];
   public mapsChange: boolean = true;
@@ -166,24 +172,22 @@ export class GamePanel {
     this.asset.setMaps();
     this.asset.setCollisions();
     this.asset.setDoor();
-
-    // this.socket.emit("oi", this.input)
-
-    this.gameloop();
-  }
-
-  public gameloop(): void {
     //statusfetch
     this.status = JSON.parse(
       getItemFromLocalState("persist:root").userStatusReducer
     );
+    this.player.playerX = this.status.status.x;
+    this.player.playerY = this.status.status.y;
+    this.mapState = this.status.status.mapState;
+    console.log(this.player.playerX);
+    this.gameloop();
+  }
 
+  public gameloop(): void {
     //map create
     this.collisionM.mapArrayCreate();
-
     //draw on canvas
     this.draw();
-
     if (this.gameState === this.fieldScene) {
       //player
       this.player.update();
@@ -232,7 +236,6 @@ export class GamePanel {
         this.otherPlayers[i].direction = "down";
         this.otherPlayers[i].email = data[i].email;
       }
-
       // console.log(this.otherPlayers);
     });
 
@@ -254,6 +257,12 @@ export class GamePanel {
       // console.log(sameperson[0].email);
     });
 
+    this.socket.on("saveDoneToGP", (data) => {
+      console.log(data, "+;l;;;;;;;");
+      this.player.playerX = data.x;
+      this.player.playerY = data.y;
+    });
+
     requestAnimationFrame(this.gameloop.bind(this));
   }
 
@@ -270,6 +279,7 @@ export class GamePanel {
 
       if (i !== yourIndex) {
         this.otherPlayers[i].draw(this.c);
+      } else {
       }
     });
 

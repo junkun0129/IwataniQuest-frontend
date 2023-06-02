@@ -11,6 +11,9 @@ type initialStateType = {
     hp: number;
     maxmumHp: number;
     level: number;
+    x: number;
+    y: number;
+    mapState: number;
   };
 };
 const initialState: initialStateType = {
@@ -24,6 +27,9 @@ const initialState: initialStateType = {
     hp: 0,
     maxmumHp: 0,
     level: 0,
+    x: 0,
+    y: 0,
+    mapState: 0,
   },
 };
 
@@ -42,6 +48,9 @@ export const userStatusSlice = createSlice({
           hp: action.payload.status.hp,
           maxmumHp: action.payload.status.maxmumHp,
           level: action.payload.status.level,
+          x: action.payload.status.x,
+          y: action.payload.status.y,
+          mapState: action.payload.status.mapState,
         });
     },
     getAttackFromEnemy: (state, action: PayloadAction<{ attack: number }>) => {
@@ -49,6 +58,15 @@ export const userStatusSlice = createSlice({
     },
     restoreHP: (state, action: PayloadAction<{ hp: number }>) => {
       state.status.hp = action.payload.hp;
+    },
+    afterSave: (
+      state,
+      action: PayloadAction<{ x: number; y: number; mapState: number }>
+    ) => {
+      state.status.x = action.payload.x;
+      state.status.y = action.payload.y;
+      state.status.mapState = action.payload.mapState;
+      console.log(state.status);
     },
     getExp: (state, action: PayloadAction<{ exp: number }>) => {
       console.log(state.status.exp, "original exp");
@@ -90,5 +108,5 @@ export const userStatusSlice = createSlice({
 });
 
 export default userStatusSlice.reducer;
-export const { createUser, getAttackFromEnemy, restoreHP, getExp } =
+export const { createUser, getAttackFromEnemy, restoreHP, getExp, afterSave } =
   userStatusSlice.actions;

@@ -13,6 +13,7 @@ import env from "ts-react-dotenv";
 import { useNonInitialEffect } from "./customhooks/useNonInitialEffect";
 import EnemiesManage from "./admincompo/EnemiesManage";
 import reuseValue from "./reuseValue";
+import ResponsiveAppBar from "./component/ResponsiveAppBar";
 
 type walkType = {
   name: string;
@@ -37,7 +38,15 @@ type userType = {
 export interface ServerToClientEvents {
   screenSwitch: (hit: string) => void;
   backSwitch: (backback: string) => void;
-  save: (save: string) => void;
+  save: ({
+    x,
+    y,
+    mapState,
+  }: {
+    x: number;
+    y: number;
+    mapState: number;
+  }) => void;
   pedestrians: (pedestrians: [walkType]) => void;
   newPedestrians: (newPedestrians: [walkType]) => void;
   tempoBack: (tempoBack: userType) => void;
@@ -49,6 +58,15 @@ export interface ServerToClientEvents {
     email: string;
     text: string | undefined;
   }) => void;
+  saveDoneToGP: ({
+    x,
+    y,
+    mapState,
+  }: {
+    x: number;
+    y: number;
+    mapState: number;
+  }) => void;
 }
 
 export interface ClientToServerEvents {
@@ -56,7 +74,15 @@ export interface ClientToServerEvents {
   oi: (input: string) => void;
   encount: (encount: string) => void;
   back: (backback: string) => void;
-  save: (save: string) => void;
+  save: ({
+    x,
+    y,
+    mapState,
+  }: {
+    x: number;
+    y: number;
+    mapState: number;
+  }) => void;
   walk: ({ name, x, y }: walkType) => void;
   textOpen: (open: string) => void;
   textSubmit: ({
@@ -65,6 +91,15 @@ export interface ClientToServerEvents {
   }: {
     email: string;
     text: string | undefined;
+  }) => void;
+  saveDone: ({
+    x,
+    y,
+    mapState,
+  }: {
+    x: number;
+    y: number;
+    mapState: number;
   }) => void;
 }
 // const url:string = process.env.SERVER_URL;
@@ -76,6 +111,7 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
 function App() {
   return (
     <>
+      <ResponsiveAppBar></ResponsiveAppBar>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home></Home>}></Route>

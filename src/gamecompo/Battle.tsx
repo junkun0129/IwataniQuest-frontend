@@ -338,37 +338,48 @@ function Battle({ socket }: socketType) {
             return (
               <motion.div
                 animate={enemy.hp <= 0 ? { opacity: 0 } : { opacity: 1 }}
-                style={{ border: "black 9px solid" }}
+                style={{ border: "red 9px solid" }}
                 ref={BoxRefs[i]}
               >
-                <div>{enemy.hp}</div>
-
                 <div
                   style={{
                     display: "flex",
+                    alignItems: "center",
                     justifyContent: "space-between",
+                    flexDirection: "column",
                     width: 400,
                     height: 40,
+                    fontSize: "1.5rem",
                   }}
                 >
-                  <div className={styles.enemyName}>{enemy.name}</div>
+                  <div style={{ fontSize: "2rem" }}>{enemy.name}</div>
                   <div
                     style={{
+                      width: "80%",
+                      height: "100%",
                       display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-
-                      width: "60%",
-                      height: "70%",
-                      background: `linear-gradient(to left, black ${
-                        (1 - enemy.hp / MaxHp[i]) * 100
-                      }%, red ${(1 - enemy.hp / MaxHp[i]) * 100}% ${
-                        (enemy1Selector.hp / MaxHp[i]) * 100
-                      }%)`,
-                      borderRadius: "10px",
-                      border: "solid white 5px",
+                      justifyContent: "space-around",
                     }}
-                  ></div>
+                  >
+                    <div>HP:{enemy.hp}</div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+
+                        width: "60%",
+                        height: "70%",
+                        background: `linear-gradient(to left, black ${
+                          (1 - enemy.hp / MaxHp[i]) * 100
+                        }%, red ${(1 - enemy.hp / MaxHp[i]) * 100}% ${
+                          (enemy1Selector.hp / MaxHp[i]) * 100
+                        }%)`,
+                        borderRadius: "10px",
+                        border: "solid white 5px",
+                      }}
+                    ></div>
+                  </div>
                 </div>
                 <motion.div animate={enemyControlls[i]}>
                   {enemyCompo}
@@ -458,34 +469,36 @@ function Battle({ socket }: socketType) {
             item
           </motion.div>
         </div>
-        <button
-          onClick={(e) => {
-            dispatch(restoreHP({ hp: 20 }));
-          }}
-        >
-          restore
-        </button>
-        <button
-          onClick={(e) => {
-            dispatch(maketozero1());
-          }}
-        >
-          ;alskj
-        </button>
-        <button
-          onClick={(e) => {
-            dispatch(maketozero2());
-          }}
-        >
-          ;alskj
-        </button>
-        <button
-          onClick={(e) => {
-            dispatch(maketozero3());
-          }}
-        >
-          ;alskj
-        </button>
+        <div style={{ paddingTop: "100px", zIndex: 10000 }}>
+          <button
+            onClick={(e) => {
+              dispatch(restoreHP({ hp: 20 }));
+            }}
+          >
+            restore
+          </button>
+          <button
+            onClick={(e) => {
+              dispatch(maketozero1());
+            }}
+          >
+            ;alskj
+          </button>
+          <button
+            onClick={(e) => {
+              dispatch(maketozero2());
+            }}
+          >
+            ;alskj
+          </button>
+          <button
+            onClick={(e) => {
+              dispatch(maketozero3());
+            }}
+          >
+            ;alskj
+          </button>
+        </div>
         <h1>chosenNum : {chosenNum}</h1>
         <h1>sceneState : {sceneState}</h1>
       </motion.div>

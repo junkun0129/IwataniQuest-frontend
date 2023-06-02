@@ -1,3 +1,4 @@
+import { Paper } from "@mui/material";
 import * as React from "react";
 import { Component } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,52 +8,68 @@ function Home() {
     <>
       <div
         style={{
-          width: 500,
-          height: 500,
+          width: "100%",
+          height: "720px",
           display: "flex",
+          flexWrap: "wrap",
+          // alignItems: "center",
           justifyContent: "center",
-          alignItems: "center",
           // backgroundColor: "red",
-          flexDirection: "column",
+          backgroundImage: "url(img/IwataniQuest-home.png)",
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          // flexDirection: "column",
+
+          overflow: "scroll",
+          position: "relative",
         }}
       >
-        <h1>Home</h1>
-        <h1
+        <div
           style={{
-            color: "white",
-            border: "white 10px solid",
-            padding: "5%",
-            borderRadius: "20px",
-            cursor: "pointer",
+            width: "100%",
+            height: "380%",
+            backgroundColor: "black",
+            opacity: 0.4,
+            position: "absolute",
           }}
-          onClick={() => navi("/signup")}
-        >
-          sign up
-        </h1>
-        <h1
+        ></div>
+        <div
           style={{
-            color: "white",
-            border: "white 10px solid",
-            padding: "5%",
-            borderRadius: "20px",
-            cursor: "pointer",
+            width: "100vw",
+            height: "100vh",
+            position: "relative",
           }}
-          onClick={(e) => navi("/login")}
         >
-          login
-        </h1>
-        <h1
-          style={{
-            color: "white",
-            border: "white 10px solid",
-            padding: "5%",
-            borderRadius: "20px",
-            cursor: "pointer",
-          }}
-          onClick={() => navi("/game")}
+          <div
+            style={{
+              backgroundImage: "url(img/gameLogo.png)",
+              backgroundSize: "cover",
+              width: "50%",
+              height: "70%",
+              position: "absolute",
+              left: "25%",
+              top: "17%",
+            }}
+          ></div>
+        </div>
+        <Paper
+          elevation={3}
+          sx={{ width: "80%", height: "500px", marginTop: "100px", zIndex: 2 }}
         >
-          game
-        </h1>
+          <h1>;lk</h1>
+        </Paper>
+        <Paper
+          elevation={3}
+          sx={{ width: "80%", height: "500px", marginTop: "100px", zIndex: 2 }}
+        >
+          plkj;lkj
+        </Paper>
+        <Paper
+          elevation={3}
+          sx={{ width: "80%", height: "500px", marginTop: "100px", zIndex: 2 }}
+        >
+          plkj;lkj
+        </Paper>
       </div>
     </>
   );

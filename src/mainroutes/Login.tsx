@@ -5,6 +5,7 @@ import { socketType } from "../gamecompo/Field";
 import reuseValue from "../reuseValue";
 import { createUser } from "../store/features/userStatuSlice";
 import { useAppDispatch, useAppSelector } from "../store/store";
+import { Button, TextField } from "@mui/material";
 function Login({ socket }: socketType) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,6 +45,9 @@ function Login({ socket }: socketType) {
                 hp: data.status.hp,
                 maxmumHp: data.status.maxmumHp,
                 level: data.status.level,
+                x: data.status.x,
+                y: data.status.y,
+                mapState: data.status.mapState,
               },
             })
           );
@@ -62,45 +66,87 @@ function Login({ socket }: socketType) {
       {error && <h1>{error}</h1>}
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
           flexDirection: "column",
+          height: "720px",
+          backgroundImage: "url(img/screenshot-3.png)",
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          backgroundColor: "beige",
+          position: "relative",
         }}
       >
-        <h1>login</h1>
-        <form
-          onSubmit={loginsubmit}
+        <div
           style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "black",
+            opacity: 0.4,
+          }}
+        ></div>
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
+            justifyContent: "center",
             alignItems: "center",
-            width: 500,
-            height: 500,
+            flexDirection: "column",
           }}
         >
-          <input
-            type="text"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{ width: "80%", height: "7%", borderRadius: "20px" }}
-          />
-          <input
-            type="text"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{ width: "80%", height: "7%", borderRadius: "20px" }}
-          />
-          <button
-            style={{ width: "80%", height: "7%", borderRadius: "20px" }}
-            type="submit"
+          <h1 style={{ color: "white", zIndex: "1" }}>login</h1>
+          <form
+            onSubmit={loginsubmit}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "25%",
+              height: 350,
+              borderRadius: "20px",
+              opacity: 0.9,
+              justifyContent: "space-around",
+              alignItems: "center",
+              backgroundColor: "white",
+            }}
           >
-            Login
-          </button>
-        </form>
+            <TextField
+              type="text"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              color="success"
+              label="email"
+              variant="filled"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            />
+            <TextField
+              type="text"
+              name="password"
+              value={password}
+              color="success"
+              label="password"
+              variant="filled"
+              onChange={(e) => setPassword(e.target.value)}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            />
+            <Button
+              color="success"
+              variant="contained"
+              style={{ width: "50%", borderRadius: "20px" }}
+              type="submit"
+            >
+              Login
+            </Button>
+          </form>
+        </div>
       </div>
     </>
   );
