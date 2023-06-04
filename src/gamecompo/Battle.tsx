@@ -152,6 +152,9 @@ function Battle({ socket }: socketType) {
       case yourActionScene:
         setDialog(youractionDialog);
         break;
+      case afteryourActionScene:
+        setDialog("3damage to enemy");
+        break;
       case enemiesTurnScene:
         setDialog(enemyturnDialog);
         break;
@@ -226,9 +229,35 @@ function Battle({ socket }: socketType) {
   const [activeEnemyNum, setActiveEnemyNum] = useState<number | null>(null);
 
   useNonInitialEffect(() => {
-    setActiveEnemyNum(Math.floor(Math.random() * 3));
-    console.log(";lkj");
-  }, [sceneState === yourTurnScene]);
+    let indexes: number[] = [];
+    enemySelectors.forEach((enemy, i) => {
+      if (enemy.hp >= 0) {
+        indexes.push(i);
+      }
+    });
+
+    console.log(indexes.length);
+    if (indexes.length === 3) {
+      setActiveEnemyNum(Math.floor(Math.random() * 3));
+      console.log("+lk");
+    } else {
+      if (indexes.length === 2) {
+        const zeroOrOne: number = Math.floor(Math.random() * 2);
+        if (zeroOrOne === 0) {
+          console.log("+lk");
+
+          setActiveEnemyNum(indexes[0]);
+        } else if (zeroOrOne === 1) {
+          console.log("+lk");
+
+          setActiveEnemyNum(indexes[1]);
+        }
+      }
+      if (indexes.length === 1) {
+        setActiveEnemyNum(indexes[0]);
+      }
+    }
+  }, [sceneState === afteryourActionScene]);
 
   useNonInitialEffect(() => {
     if (activeEnemyNum) {
@@ -247,8 +276,11 @@ function Battle({ socket }: socketType) {
         .start({
           scale: [2, 2, 2, 1, 1],
           rotate: [0, 0, 50, -50, 0],
+          transition: { duration: 1 },
         })
         .then(() => {
+          console.log(";lkj", activeEnemyNum);
+
           if (enemyAttackCount === 0) {
             setEnemyAttackCount((pre) => pre + 1);
             dispatch(
@@ -257,6 +289,7 @@ function Battle({ socket }: socketType) {
           }
         })
         .then(() => {
+          setActiveEnemyNum(null);
           setSceneState(afterEnemyActionScene);
         });
     }
@@ -265,18 +298,25 @@ function Battle({ socket }: socketType) {
   //ontap hpBar
   const [isActionEnd, setIsActionEnd] = useState(false);
   const hpBarOnTap = () => {
-    if (sceneState === appearedScene || sceneState === enemiesTurnScene) {
-      setSceneState(sceneState + 1);
+    if (sceneState === appearedScene) {
+      setSceneState(yourTurnScene);
     }
 
+    if (sceneState === enemiesTurnScene) {
+      setSceneState(enemiesActionScene);
+    }
+
+    if (sceneState === afteryourActionScene) {
+      setSceneState(enemiesTurnScene);
+    }
     if (sceneState === afterEnemyActionScene) {
       setEnemyAttackCount(0);
       setSceneState(yourTurnScene);
     }
 
     if (isActionEnd) {
-      setIsActionEnd(false);
       setSceneState(enemiesTurnScene);
+      setIsActionEnd(false);
     }
     // //defeted all enemy
     if (
@@ -338,7 +378,7 @@ function Battle({ socket }: socketType) {
             return (
               <motion.div
                 animate={enemy.hp <= 0 ? { opacity: 0 } : { opacity: 1 }}
-                style={{ border: "red 9px solid" }}
+                // style={{ border: "red 9px solid" }}
                 ref={BoxRefs[i]}
               >
                 <div
@@ -438,6 +478,7 @@ function Battle({ socket }: socketType) {
             chosenNum={chosenNum}
             isActionEnd={(is) => setIsActionEnd(is)}
             setChosenNum={(num) => setChosenNum(num)}
+            setSceneState={(scene) => setSceneState(scene)}
           ></HP2>
         </div>
 
@@ -469,7 +510,7 @@ function Battle({ socket }: socketType) {
             item
           </motion.div>
         </div>
-        <div style={{ paddingTop: "100px", zIndex: 10000 }}>
+        {/* <div style={{ paddingTop: "0px", zIndex: 10000, display: "flex" }}>
           <button
             onClick={(e) => {
               dispatch(restoreHP({ hp: 20 }));
@@ -498,9 +539,10 @@ function Battle({ socket }: socketType) {
           >
             ;alskj
           </button>
-        </div>
-        <h1>chosenNum : {chosenNum}</h1>
-        <h1>sceneState : {sceneState}</h1>
+          <h1>chosenNum : {chosenNum}</h1>
+          <h1>sceneState : {sceneState}</h1>
+          <h1>active enemy:{activeEnemyNum}</h1>
+        </div> */}
       </motion.div>
     </>
   );

@@ -20,6 +20,7 @@ type Props = {
   chosenNum: number | null;
   isActionEnd: (is: boolean) => void;
   setChosenNum: (num: number | null) => void;
+  setSceneState: (scene: number) => void;
 };
 const swordStyle = {
   height: "200%",
@@ -44,6 +45,7 @@ const HP2 = React.forwardRef(
       chosenNum,
       isActionEnd,
       setChosenNum,
+      setSceneState,
     }: Props,
     ref: React.Ref<HTMLDivElement>
   ) => {
@@ -109,6 +111,7 @@ const HP2 = React.forwardRef(
           .then((data) => {
             setChosenNum(null);
             isActionEnd(true);
+            setSceneState(9);
           });
       }
     }, [chosenNum]);
@@ -119,6 +122,8 @@ const HP2 = React.forwardRef(
           animate={boxControll}
           style={{
             position: "relative",
+            fontSize: "2rem",
+            color: "white",
             width: "100%",
             height: "240px",
             border: "10px solid white",

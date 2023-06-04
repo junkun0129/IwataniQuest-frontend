@@ -1,12 +1,15 @@
-import { Paper } from "@mui/material";
+import { Card, CardMedia, Paper } from "@mui/material";
 import * as React from "react";
 import { Component } from "react";
 import { useNavigate } from "react-router-dom";
+import { Player } from "video-react";
+import styles from "./Home.module.scss";
 function Home() {
   const navi = useNavigate();
   return (
     <>
       <div
+        className={styles.box}
         style={{
           width: "100%",
           height: "720px",
@@ -48,28 +51,134 @@ function Home() {
               height: "70%",
               position: "absolute",
               left: "25%",
-              top: "17%",
+              top: "30%",
             }}
           ></div>
         </div>
-        <Paper
-          elevation={3}
-          sx={{ width: "80%", height: "500px", marginTop: "100px", zIndex: 2 }}
+        <div
+          style={{
+            width: "80%",
+            height: "400px",
+            marginTop: "100px",
+            zIndex: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-around",
+            backgroundColor: "black",
+            color: "white",
+            border: "white solid 10px",
+            borderRadius: "30px",
+          }}
         >
-          <h1>;lk</h1>
-        </Paper>
-        <Paper
-          elevation={3}
-          sx={{ width: "80%", height: "500px", marginTop: "100px", zIndex: 2 }}
+          <div
+            style={{
+              width: "50%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <video width="90%" height="100%" loop autoPlay muted>
+              <source src="video/game-start.mp4"></source>
+            </video>
+          </div>
+          <div
+            style={{
+              width: "40%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "2rem",
+              fontFamily: "monospace",
+            }}
+          >
+            this is the game starts from small village
+          </div>
+        </div>
+        <div
+          style={{
+            width: "80%",
+            height: "400px",
+            marginTop: "100px",
+            zIndex: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-around",
+            backgroundColor: "black",
+            color: "white",
+            border: "white solid 10px",
+            borderRadius: "30px",
+          }}
         >
-          plkj;lkj
-        </Paper>
-        <Paper
-          elevation={3}
-          sx={{ width: "80%", height: "500px", marginTop: "100px", zIndex: 2 }}
+          <div
+            style={{
+              width: "35%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "2rem",
+              fontFamily: "monospace",
+            }}
+          >
+            Go to the world and defeat monsters. in order to do that, just drag
+            your HP bar and drop it!
+          </div>
+          <div
+            style={{
+              width: "50%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <video width="90%" height="100%" loop autoPlay muted>
+              <source src="video/battle-scene.mp4"></source>
+            </video>
+          </div>
+        </div>
+        <div
+          style={{
+            width: "80%",
+            height: "400px",
+            marginTop: "100px",
+            zIndex: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-around",
+            backgroundColor: "black",
+            color: "white",
+            border: "white solid 10px",
+            borderRadius: "30px",
+          }}
         >
-          plkj;lkj
-        </Paper>
+          <div
+            style={{
+              width: "50%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <video width="90%" height="100%" loop autoPlay muted>
+              <source src="video/newVillege.mp4"></source>
+            </video>
+          </div>
+          <div
+            style={{
+              width: "30%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "2rem",
+              fontFamily: "monospace",
+            }}
+          >
+            Go to new village and see the people around the map
+          </div>
+        </div>
       </div>
     </>
   );
