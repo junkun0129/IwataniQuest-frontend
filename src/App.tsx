@@ -111,7 +111,7 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
 function App() {
   return (
     <>
-      <ResponsiveAppBar></ResponsiveAppBar>
+      {/* <ResponsiveAppBar></ResponsiveAppBar> */}
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home></Home>}></Route>
