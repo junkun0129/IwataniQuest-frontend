@@ -117,10 +117,11 @@ function App() {
           <Route path="/" element={<Home></Home>}></Route>
           <Route path="/game" element={<Game socket={socket}></Game>}></Route>
           <Route path="/signup" element={<Signup></Signup>}></Route>
-          <Route
+          <Route path="/login" element={<h1>;lkj</h1>}></Route>
+          {/* <Route
             path="/login"
             element={<Login socket={socket}></Login>}
-          ></Route>
+          ></Route> */}
           <Route
             path="/admin/enemies"
             element={<EnemiesManage></EnemiesManage>}
