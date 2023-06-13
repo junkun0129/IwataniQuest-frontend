@@ -364,7 +364,7 @@ export class UI {
 
   drawDialog(c: CanvasRenderingContext2D) {
     let dialogX = 240;
-    let dialogY = 20;
+    let dialogY = 100;
     let dialogWidth = 1000;
     let dialogHeight = 250;
 
