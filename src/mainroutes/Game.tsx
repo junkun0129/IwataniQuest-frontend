@@ -6,6 +6,7 @@ import Field, { socketType } from "../gamecompo/Field";
 import { motion, useAnimationControls } from "framer-motion";
 import styles from "./Game.module.scss";
 import { useAppSelector } from "../store/store";
+import Battle2 from "../gamecompo/Battle2";
 
 function Game({ socket }: socketType) {
   const [screenNUm, setScreenNum] = useState(0);
@@ -72,7 +73,8 @@ function Game({ socket }: socketType) {
           initial={{ x: -1600 }}
           style={{ position: "absolute", width: "100vw", height: "100vh" }}
         >
-          <Battle socket={socket}></Battle>
+          {/* <Battle socket={socket}></Battle> */}
+          <Battle2 socket={socket}></Battle2>
         </motion.div>
       </div>
     </>

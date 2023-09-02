@@ -5,8 +5,21 @@ export type enemyStatusType = {
   hp: number;
   at: number;
   exp: number;
+  MaxHp: number;
 };
-const initialState: enemyStatusType = { name: "", hp: 0, at: 0, exp: 0 };
+export type enemyDataStatusType = {
+  name: string;
+  hp: number;
+  at: number;
+  exp: number;
+};
+const initialState: enemyStatusType = {
+  name: "",
+  hp: 0,
+  at: 0,
+  exp: 0,
+  MaxHp: 0,
+};
 
 //enemy1
 export const enemy1Slice = createSlice({
@@ -17,7 +30,8 @@ export const enemy1Slice = createSlice({
       (state.name = action.payload.name),
         (state.hp = action.payload.hp),
         (state.at = action.payload.at),
-        (state.exp = action.payload.exp);
+        (state.exp = action.payload.exp),
+        (state.MaxHp = action.payload.MaxHp);
     },
     atackEnemy1: (state, action: PayloadAction<{ atack: number }>) => {
       state.hp = state.hp - action.payload.atack;
@@ -40,7 +54,8 @@ export const enemy2Slice = createSlice({
       (state.name = action.payload.name),
         (state.hp = action.payload.hp),
         (state.at = action.payload.at),
-        (state.exp = action.payload.exp);
+        (state.exp = action.payload.exp),
+        (state.MaxHp = action.payload.MaxHp);
     },
     atackEnemy2: (state, action: PayloadAction<{ atack: number }>) => {
       state.hp = state.hp - action.payload.atack;
@@ -63,7 +78,8 @@ export const enemy3Slice = createSlice({
       (state.name = action.payload.name),
         (state.hp = action.payload.hp),
         (state.at = action.payload.at),
-        (state.exp = action.payload.exp);
+        (state.exp = action.payload.exp),
+        (state.MaxHp = action.payload.MaxHp);
     },
     atackEnemy3: (state, action: PayloadAction<{ atack: number }>) => {
       state.hp = state.hp - action.payload.atack;

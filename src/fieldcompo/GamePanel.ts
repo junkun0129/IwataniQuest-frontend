@@ -217,6 +217,7 @@ export class GamePanel {
         this.gameState !== this.battleScene &&
         this.mapState === this.outField
       ) {
+        console.log("hit");
         this.socket.emit("encount", "hit");
         this.gameState = this.battleScene;
       }
@@ -306,7 +307,7 @@ export class GamePanel {
   }
 
   public Encounter(): boolean {
-    const ramdomNum: number = Math.floor(Math.random() * 800);
+    const ramdomNum: number = Math.floor(Math.random() * 100);
 
     if (ramdomNum === 50) {
       return true;

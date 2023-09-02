@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Component, useState, useEffect } from "react";
+import { Component, useState, useEffect, useLayoutEffect } from "react";
 import {
   motion,
   useMotionValue,
@@ -59,14 +59,14 @@ const HP2 = React.forwardRef(
     );
     const boxControll = useAnimationControls();
 
-    useNonInitialEffect(() => {
+    useLayoutEffect(() => {
       boxControll.start({
         background: `linear-gradient(to left, black ${
           (1 - hp / mxHp) * 100
         }%, lime ${(1 - hp / mxHp) * 100}% ${(hp / mxHp) * 100}%)`,
       });
     }, [hp]);
-    useNonInitialEffect(() => {
+    useLayoutEffect(() => {
       if (sceneState === 2) {
         boxControll.start(ballStyle);
       } else {
@@ -74,7 +74,7 @@ const HP2 = React.forwardRef(
       }
     }, [sceneState]);
 
-    useNonInitialEffect(() => {
+    useLayoutEffect(() => {
       if (shapeState === 1) {
         boxControll.start(swordStyle);
       } else {
@@ -82,7 +82,7 @@ const HP2 = React.forwardRef(
       }
     }, [shapeState]);
 
-    useNonInitialEffect(() => {
+    useLayoutEffect(() => {
       if (chosenNum !== null) {
         boxControll
           .start({

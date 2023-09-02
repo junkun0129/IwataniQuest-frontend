@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Component } from "react";
+import { Component, useLayoutEffect } from "react";
 import styles from "./Battle.module.scss";
 import {
   motion,
@@ -127,6 +127,7 @@ function Battle({ socket }: socketType) {
             const data: Array<enemyStatusType> = await response.json();
             data.forEach((enemy, i) => {
               enemyDispatches[i](enemy);
+              console.log(";lkj");
               setMaxHp((pre) => [...pre, enemy.hp]);
               setTotalExp((totalExp = totalExp + enemy.exp));
             });
@@ -228,7 +229,7 @@ function Battle({ socket }: socketType) {
   const enemyControlls = [enemyControll1, enemyControll2, enemyControll3];
   const [activeEnemyNum, setActiveEnemyNum] = useState<number | null>(null);
 
-  useNonInitialEffect(() => {
+  useLayoutEffect(() => {
     let indexes: number[] = [];
     enemySelectors.forEach((enemy, i) => {
       if (enemy.hp >= 0) {
@@ -259,7 +260,7 @@ function Battle({ socket }: socketType) {
     }
   }, [sceneState === afteryourActionScene]);
 
-  useNonInitialEffect(() => {
+  useLayoutEffect(() => {
     if (activeEnemyNum) {
       setEnemyturnDialog(
         `${enemySelectors[activeEnemyNum].name} is about attack you`
@@ -510,7 +511,7 @@ function Battle({ socket }: socketType) {
             item
           </motion.div>
         </div>
-        {/* <div style={{ paddingTop: "0px", zIndex: 10000, display: "flex" }}>
+        <div style={{ paddingTop: "0px", zIndex: 10000, display: "flex" }}>
           <button
             onClick={(e) => {
               dispatch(restoreHP({ hp: 20 }));
@@ -542,7 +543,7 @@ function Battle({ socket }: socketType) {
           <h1>chosenNum : {chosenNum}</h1>
           <h1>sceneState : {sceneState}</h1>
           <h1>active enemy:{activeEnemyNum}</h1>
-        </div> */}
+        </div>
       </motion.div>
     </>
   );
