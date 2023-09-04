@@ -51,11 +51,9 @@ const HP2 = React.forwardRef(
   ) => {
     const dispatch = useAppDispatch();
 
-    const hp = useAppSelector(
-      (state) => state.reducer.userStatusReducer.status.hp
-    );
+    const hp = useAppSelector((state) => state.userStatusReducer.status.hp);
     const mxHp = useAppSelector(
-      (state) => state.reducer.userStatusReducer.status.maxmumHp
+      (state) => state.userStatusReducer.status.maxmumHp
     );
     const boxControll = useAnimationControls();
 

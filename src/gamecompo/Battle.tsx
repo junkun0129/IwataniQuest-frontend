@@ -61,10 +61,8 @@ function Battle({ socket }: socketType) {
   const afterBattleScene = 7;
   const switchBackScene = 8;
   const [sceneState, setSceneState] = useState<number>(0);
-  const userAt = useAppSelector(
-    (state) => state.reducer.userStatusReducer.status.at
-  );
-  const user = useAppSelector((state) => state.reducer.userStatusReducer);
+  const userAt = useAppSelector((state) => state.userStatusReducer.status.at);
+  const user = useAppSelector((state) => state.userStatusReducer);
 
   const BoxRef1 = useRef<HTMLDivElement | null>(null);
   const BoxRef2 = useRef<HTMLDivElement | null>(null);
@@ -73,9 +71,9 @@ function Battle({ socket }: socketType) {
   const BoxRefs = [BoxRef1, BoxRef2, BoxRef3];
 
   const dispatch = useAppDispatch();
-  const enemy1Selector = useAppSelector((state) => state.reducer.enemy1Reducer);
-  const enemy2Selector = useAppSelector((state) => state.reducer.enemy2Reducer);
-  const enemy3Selector = useAppSelector((state) => state.reducer.enemy3Reducer);
+  const enemy1Selector = useAppSelector((state) => state.enemy1Reducer);
+  const enemy2Selector = useAppSelector((state) => state.enemy2Reducer);
+  const enemy3Selector = useAppSelector((state) => state.enemy3Reducer);
   const enemySelectors = [enemy1Selector, enemy2Selector, enemy3Selector];
   const enemyFieldBottomLine = useRef(0);
   const [enemyCoordinates, setEnemyCoordinates] = useState<any>(null);

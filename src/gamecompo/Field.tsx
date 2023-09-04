@@ -19,7 +19,7 @@ function Field({ socket }: socketType) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [game, setGame] = useState<GamePanel | null>(null);
   const [isEncount, setIsEncount] = useState<boolean>(false);
-  const user = useAppSelector((state) => state.reducer.userStatusReducer);
+  const user = useAppSelector((state) => state.userStatusReducer);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isAppearInput, setIsAppearInput] = useState<boolean>(false);

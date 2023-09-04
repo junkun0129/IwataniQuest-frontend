@@ -10,7 +10,10 @@ import { enemy1Reducer } from "./features/enemySlice";
 import { enemy2Reducer } from "./features/enemySlice";
 import { enemy3Reducer } from "./features/enemySlice";
 import userStatusReducer from "./features/userStatuSlice";
-import { battleStateReducer } from "./features/battleStateSlice";
+import {
+  battleStateReducer,
+  collisionNumReducer,
+} from "./features/battleStateSlice";
 
 const persisConfig = {
   key: "root",
@@ -24,12 +27,13 @@ const reducer = combineReducers({
   enemy3Reducer,
   userStatusReducer,
   battleStateReducer,
+  collisionNumReducer,
 });
 
 const persistedReducer = persistReducer(persisConfig, reducer);
 
 export const store = configureStore({
-  reducer: { reducer: persistedReducer },
+  reducer: persistedReducer, // Remove the extra 'reducer' field
   middleware: [],
 });
 

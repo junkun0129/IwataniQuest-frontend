@@ -1,80 +1,45 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect } from "react";
+import { motion, useAnimationControls } from "framer-motion";
+import { useAppSelector } from "../store/store";
+import useHPBarAnimation from "../customhooks/useHPBarAnimation";
 
 type HPBarProps = {
   enemyRefs: React.RefObject<HTMLElement>[];
+  dialog: string;
 };
 
-const HPBar = ({ enemyRefs }: HPBarProps) => {
-  const checkCollisions = (hpBarRect, enemyRect) => {
-    // Check for horizontal collision (x-axis)
-    const horizontalCollision =
-      hpBarRect.right >= enemyRect.left && hpBarRect.left <= enemyRect.right;
+const HPBar = React.forwardRef(
+  ({ enemyRefs, dialog }: HPBarProps, ref: React.Ref<HTMLDivElement>) => {
+    const playerStatus = useAppSelector(
+      (state) => state.userStatusReducer.status
+    );
 
-    // Check for vertical collision (y-axis)
-    const verticalCollision =
-      hpBarRect.bottom >= enemyRect.top && hpBarRect.top <= enemyRect.bottom;
+    const hpGage = useAnimationControls();
+    useHPBarAnimation(hpGage, playerStatus.hp, playerStatus.maxmumHp);
 
-    // Return true if there's a collision in both dimensions
-    return horizontalCollision && verticalCollision;
-  };
+    return (
+      <motion.div
+        ref={ref}
+        style={{
+          border: "white 8px solid",
+          height: "30%",
+          margin: 20,
+          backgroundColor: "lightgray",
+          position: "relative",
+        }}
+      >
+        <div style={{ position: "absolute", fontSize: "3rem" }}>{dialog}</div>
+        <motion.div
+          animate={hpGage}
+          style={{
+            width: `${(playerStatus.hp / playerStatus.maxmumHp) * 100}%`,
+            height: "100%",
+            backgroundColor: "lightgreen",
+          }}
+        ></motion.div>
+      </motion.div>
+    );
+  }
+);
 
-  const handleDragEnd = (event: any) => {
-    const hpBar = event.target;
-    const hpBarRect = hpBar.getBoundingClientRect();
-
-    // Calculate the middle of the HP bar
-    const hpBarMiddleX = (hpBarRect.left + hpBarRect.right) / 2;
-    const hpBarMiddleY = (hpBarRect.top + hpBarRect.bottom) / 2;
-
-    let closestEnemy = null;
-    let closestDistance = Number.MAX_VALUE;
-
-    enemyRefs.forEach((enemyRef) => {
-      if (enemyRef.current) {
-        const enemyRect = enemyRef.current.getBoundingClientRect();
-
-        // Calculate the middle of the enemy
-        const enemyMiddleX = (enemyRect.left + enemyRect.right) / 2;
-        const enemyMiddleY = (enemyRect.top + enemyRect.bottom) / 2;
-
-        // Check if the HP bar's bottom is above the enemy's top
-        const verticalCollision =
-          hpBarRect.bottom >= enemyRect.top &&
-          hpBarRect.top <= enemyRect.bottom;
-
-        if (verticalCollision) {
-          // Calculate the distance from the HP bar to the enemy
-          const distance = Math.sqrt(
-            Math.pow(hpBarMiddleX - enemyMiddleX, 2) +
-              Math.pow(hpBarMiddleY - enemyMiddleY, 2)
-          );
-
-          if (distance < closestDistance) {
-            closestEnemy = enemyRef.current;
-            closestDistance = distance;
-          }
-        }
-      }
-    });
-
-    if (closestEnemy) {
-      // You can perform actions here, e.g., attacking the closest enemy
-      console.log("Collision with closest enemy", closestEnemy);
-    }
-  };
-
-  return (
-    <motion.div
-      drag
-      dragConstraints={{ left: 0, right: 100 }}
-      whileTap={{ scale: 1.2 }}
-      onDragEnd={handleDragEnd}
-      style={{ border: "black 2px solid" }}
-    >
-      HP Bar
-    </motion.div>
-  );
-};
-
-export default HPBar;
+export default motion(HPBar);

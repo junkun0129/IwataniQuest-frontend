@@ -7,15 +7,14 @@ import { motion, useAnimationControls } from "framer-motion";
 import styles from "./Game.module.scss";
 import { useAppSelector } from "../store/store";
 import Battle2 from "../gamecompo/Battle2";
+import BattleDebag from "../gamecompo/BattleDebag";
 
 function Game({ socket }: socketType) {
   const [screenNUm, setScreenNum] = useState(0);
   const [battleMode, setBattleMode] = useState(false);
   const fieldControl = useAnimationControls();
   const battleControl = useAnimationControls();
-  const userStatuSelector = useAppSelector(
-    (state) => state.reducer.userStatusReducer
-  );
+  const userStatuSelector = useAppSelector((state) => state.userStatusReducer);
 
   useEffect(() => {
     socket.on("screenSwitch", async (data) => {
@@ -75,6 +74,7 @@ function Game({ socket }: socketType) {
         >
           <Battle socket={socket}></Battle>
           {/* <Battle2 socket={socket}></Battle2> */}
+          {/* <BattleDebag></BattleDebag> */}
         </motion.div>
       </div>
     </>

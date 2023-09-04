@@ -1,58 +1,97 @@
-import { useState } from "react";
+import { AnimationControls } from "framer-motion";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { atackEnemy1, atackEnemy2 } from "../store/features/enemySlice";
+import { getAttackFromEnemy } from "../store/features/userStatuSlice";
+type useSequenceProps = {
+  enemyControls: AnimationControls[];
+};
+const useSequence = (
+  sequence: string,
+  enemyControls: AnimationControls[],
+  hpBarControl: AnimationControls
+) => {
+  const [dialog, setDialog] = useState("");
+  const dispatch = useAppDispatch();
+  const collisionNum = useAppSelector(
+    (state) => state.collisionNumReducer.collisionNum
+  );
+  const playerStatus = useAppSelector(
+    (state) => state.userStatusReducer.status
+  );
+  const enemy1Selector = useAppSelector((state) => state.enemy1Reducer);
+  const enemy2Selector = useAppSelector((state) => state.enemy2Reducer);
+  const enemy3Selector = useAppSelector((state) => state.enemy3Reducer);
 
-const useSequence = () => {
-  const [battleState, setBattleState] = useState(0); // 0: Not started, 1: In progress, 2: Ended
-  const [turn, setTurn] = useState("user"); // "user" or "enemy"
+  const enemySelectors = [enemy1Selector, enemy2Selector, enemy3Selector];
+  const enemyAttacks = [atackEnemy1, atackEnemy1, atackEnemy2];
+  useEffect(() => {
+    const animateHpBar = async () => {
+      if (sequence) {
+        switch (sequence) {
+          case "start": {
+            setDialog("you ran into enemies!!!");
+            break;
+          }
 
-  // Functions to manage turn state
-  const setUserTurn = () => setTurn("user");
-  const setEnemyTurn = () => setTurn("enemy");
+          case "player-action": {
+            setDialog("");
+            if (collisionNum) {
+              setDialog("attackkkkkkuuuu");
+              await hpBarControl.start({
+                x: 100,
+                y: 50,
+                rotate: 100,
+                transition: {
+                  duration: 1,
+                },
+              });
 
-  // Define functions for handling battle sequences and changing battle state
-  const startBattle = () => {
-    // Change the battle state to "in progress"
-    setBattleState(1);
+              // After the first animation is complete, reset the hpBar properties
+              await hpBarControl.start({
+                rotate: 0,
+                x: 0,
+                y: 0,
+                borderRadius: "10px",
+              });
 
-    // Initialize turn to "user" (user starts)
-    setUserTurn();
+              dispatch(enemyAttacks[collisionNum]({ atack: playerStatus.at }));
 
-    // Add logic to initiate your battle sequence here
-  };
+              setDialog(`${playerStatus.at} damage to enemy`);
+            }
 
-  const endBattle = () => {
-    // Change the battle state to "ended"
-    setBattleState(2);
+            break;
+          }
 
-    // Reset turn to "user"
-    setUserTurn();
+          case "enemy-action": {
+            const AINum = Math.floor(Math.random() * 3);
 
-    // Add logic to handle the end of the battle here
-  };
+            setDialog(`${enemySelectors[AINum].name} attacks you`);
 
-  const userTurnAction = () => {
-    // Add logic for user's turn here
-    // Example: handle user attacks
+            await enemyControls[AINum].start({
+              scale: [2, 2, 2, 1, 1],
+              rotate: [0, 0, 50, -50, 0],
+              transition: { duration: 1 },
+            });
 
-    // Switch to enemy's turn
-    setEnemyTurn();
-  };
+            dispatch(getAttackFromEnemy({ attack: enemySelectors[AINum].at }));
+            break;
+          }
 
-  const enemyTurnAction = () => {
-    // Add logic for enemy's turn here
-    // Example: handle enemy attacks
+          case "end": {
+            setDialog("you defeated all the enemies!!");
+            break;
+          }
+          default:
+            break;
+        }
+      }
+    };
 
-    // Switch to user's turn
-    setUserTurn();
-  };
+    animateHpBar(); // Call the async function
+  }, [sequence, collisionNum]);
 
-  return {
-    battleState,
-    turn,
-    startBattle,
-    endBattle,
-    userTurnAction,
-    enemyTurnAction,
-  };
+  return { dialog };
 };
 
 export default useSequence;
