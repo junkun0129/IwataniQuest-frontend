@@ -22,8 +22,8 @@ const HPBar = React.forwardRef(
         ref={ref}
         style={{
           border: "white 8px solid",
-          height: "30%",
-          margin: 20,
+          width: "100%",
+          height: "100%",
           backgroundColor: "lightgray",
           position: "relative",
         }}

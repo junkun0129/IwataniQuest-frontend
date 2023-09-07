@@ -72,9 +72,9 @@ function Game({ socket }: socketType) {
           initial={{ x: -1600 }}
           style={{ position: "absolute", width: "100vw", height: "100vh" }}
         >
-          <Battle socket={socket}></Battle>
-          {/* <Battle2 socket={socket}></Battle2> */}
-          {/* <BattleDebag></BattleDebag> */}
+          {/* <Battle socket={socket}></Battle> */}
+          <Battle2 socket={socket}></Battle2>
+          <BattleDebag></BattleDebag>
         </motion.div>
       </div>
     </>

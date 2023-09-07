@@ -15,6 +15,7 @@ import {
   atackEnemy1,
   atackEnemy2,
   atackEnemy3,
+  enemyStatusType,
 } from "../store/features/enemySlice";
 import { getAttackFromEnemy } from "../store/features/userStatuSlice";
 import { motion, useAnimationControls } from "framer-motion";
@@ -34,11 +35,7 @@ function Battle2({ socket }: socketType) {
   );
   let [closestEnemy, setClosestEnemy] = useState(null);
   const enemySelectors = [enemy1Selector, enemy2Selector, enemy3Selector];
-  const [enemyHP, setEnemyHP] = useState([
-    enemy1Selector.hp,
-    enemy2Selector.hp,
-    enemy3Selector.hp,
-  ]);
+
   const hpGage1 = useAnimationControls();
   const hpGage2 = useAnimationControls();
   const hpGage3 = useAnimationControls();
@@ -47,7 +44,7 @@ function Battle2({ socket }: socketType) {
     useHPBarAnimation(hpGages[i], enemy.hp, enemy.MaxHp);
   });
   const dispatch = useAppDispatch();
-  const [sequence, setSequence] = useState("start");
+  const [sequence, setSequence] = useState<sequenceType>("start");
   const enemyControl1 = useAnimationControls();
   const enemyControl2 = useAnimationControls();
   const enemyControl3 = useAnimationControls();
@@ -56,24 +53,31 @@ function Battle2({ socket }: socketType) {
   const { dialog } = useSequence(sequence, enemyControls, hpBarControl);
   const handleDragEnd = (event) => {
     const collisionNum = collisionCheck(event, enemyRefs);
-    setSequence("player-action");
+    console.log(collisionNum, "nummmmmmmmm");
     if (collisionNum) {
+      setSequence("player-action");
       dispatch(changeCollisionNum({ collisionNum: collisionNum }));
     }
   };
 
   const handleClick = () => {
+    const condition = (e: enemyStatusType) => e.hp <= 0;
+    if (enemySelectors.every(condition)) {
+      setSequence("end-player-win");
+    }
     if (sequence === "start") {
-      setSequence("player-action");
+      setSequence("player-turn");
     }
     if (sequence === "player-action") {
       setSequence("enemy-action");
     }
+
     if (sequence === "enemy-action") {
       if (playerStatus.hp <= 0) {
         //battle end you lose
+        setSequence("end-player-lose");
       } else {
-        setSequence("player-action");
+        setSequence("player-turn");
       }
     }
   };
@@ -84,7 +88,10 @@ function Battle2({ socket }: socketType) {
       <div style={{ display: "flex", justifyContent: "space-around" }}>
         {enemyComponents.map((enemyCompo, i) => {
           return (
-            <div
+            <motion.div
+              animate={
+                enemySelectors[i].hp <= 0 ? { opacity: 0 } : { opacity: 1 }
+              }
               ref={enemyRefs[i]}
               style={{ border: "black solid  2px", height: "250px" }}
             >
@@ -97,27 +104,38 @@ function Battle2({ socket }: socketType) {
                   style={{
                     backgroundColor: "red",
                     height: "100%",
-                    width: `${(enemyHP[i] / enemySelectors[i].MaxHp) * 100}%`,
+                    width: `${
+                      (enemySelectors[i].hp / enemySelectors[i].MaxHp) * 100
+                    }%`,
                   }}
                 ></motion.div>
               </div>
               <motion.div animate={enemyControls[i]}>{enemyCompo}</motion.div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
-      <HPBar
-        animate={hpBarControl}
-        enemyRefs={enemyRefs}
-        drag
-        dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-        dragTransition={{ bounceStiffness: 500, bounceDamping: 20 }}
-        dragElastic={0.8}
-        whileTap={{ scale: 1.2 }}
-        onDragEnd={handleDragEnd}
-        dialog={dialog}
-        onTap={handleClick}
-      ></HPBar>
+      <div
+        style={{
+          height: "30%",
+          marginTop: 20,
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <HPBar
+          animate={hpBarControl}
+          enemyRefs={enemyRefs}
+          drag
+          dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+          dragTransition={{ bounceStiffness: 500, bounceDamping: 20 }}
+          dragElastic={0.8}
+          whileTap={{ scale: 1.2 }}
+          onDragEnd={handleDragEnd}
+          dialog={dialog}
+          onTap={handleClick}
+        ></HPBar>
+      </div>
     </>
   );
 }
@@ -145,9 +163,9 @@ const collisionCheck = (
       const enemyMiddleY = (enemyRect.top + enemyRect.bottom) / 2;
 
       // Check if the HP bar's bottom is above the enemy's top
-      const verticalCollision =
-        hpBarRect.bottom >= enemyRect.top && hpBarRect.top <= enemyRect.bottom;
+      const verticalCollision = hpBarRect.bottom >= enemyRect.bottom - 100;
 
+      console.log("vertical clear!!!");
       if (verticalCollision) {
         // Calculate the distance from the HP bar to the enemy
         const distance = Math.sqrt(
@@ -166,7 +184,7 @@ const collisionCheck = (
 
   if (closestEnemy) {
     // You can perform actions here, e.g., attacking the closest enemy
-
+    console.log(collisionNum, "collisionNum");
     return collisionNum;
   }
 
