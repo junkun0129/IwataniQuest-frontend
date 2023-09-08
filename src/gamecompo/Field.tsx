@@ -2,7 +2,6 @@ import * as React from "react";
 import { Component, useEffect, useRef } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ServerToClientEvents, ClientToServerEvents } from "../App";
 import { Socket } from "socket.io-client";
 import { GamePanel } from "../fieldcompo/GamePanel";
 import { motion } from "framer-motion";
@@ -11,6 +10,7 @@ import { useNonInitialEffect } from "../customhooks/useNonInitialEffect";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import reuseValue from "../reuseValue";
 import { afterSave, createUser } from "../store/features/userStatuSlice";
+import { ClientToServerEvents, ServerToClientEvents } from "../types/type";
 
 export type socketType = {
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;

@@ -12,7 +12,7 @@ function Login({ socket }: socketType) {
   const [isSubmit, setIsSubmit] = useState<boolean>(false);
   const [error, setError] = useState("");
   const userStatusDispach = useAppDispatch();
-  const userStatus = useAppSelector((state) => state.reducer.userStatusReducer);
+  const userStatus = useAppSelector((state) => state.userStatusReducer);
   const navigate = useNavigate();
 
   const loginsubmit = (e: React.SyntheticEvent) => {

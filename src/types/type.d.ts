@@ -4,4 +4,94 @@ type sequenceType =
   | "player-action"
   | "enemy-action"
   | "end-player-win"
-  | "end-player-lose";
+  | "end-player-lose"
+  | "field";
+
+type battleRedultType = "win" | "lose" | null;
+type walkType = {
+  name: string;
+  email: string;
+  x: number;
+  y: number;
+};
+
+type userType = {
+  userId: string;
+  email: string;
+  name: string;
+  status: {
+    at: number;
+    exp: number;
+    hp: number;
+    maxmumHp: number;
+    level: number;
+  };
+  token: string;
+};
+export interface ServerToClientEvents {
+  screenSwitch: (hit: string) => void;
+  backSwitch: (backback: string) => void;
+  save: ({
+    x,
+    y,
+    mapState,
+  }: {
+    x: number;
+    y: number;
+    mapState: number;
+  }) => void;
+  pedestrians: (pedestrians: [walkType]) => void;
+  newPedestrians: (newPedestrians: [walkType]) => void;
+  tempoBack: (tempoBack: userType) => void;
+  textOpentoField: (open: string) => void;
+  textAppear: ({
+    email,
+    text,
+  }: {
+    email: string;
+    text: string | undefined;
+  }) => void;
+  saveDoneToGP: ({
+    x,
+    y,
+    mapState,
+  }: {
+    x: number;
+    y: number;
+    mapState: number;
+  }) => void;
+}
+
+export interface ClientToServerEvents {
+  hello: () => void;
+  oi: (input: string) => void;
+  encount: (encount: string) => void;
+  back: (backback: string) => void;
+  save: ({
+    x,
+    y,
+    mapState,
+  }: {
+    x: number;
+    y: number;
+    mapState: number;
+  }) => void;
+  walk: ({ name, x, y }: walkType) => void;
+  textOpen: (open: string) => void;
+  textSubmit: ({
+    email,
+    text,
+  }: {
+    email: string;
+    text: string | undefined;
+  }) => void;
+  saveDone: ({
+    x,
+    y,
+    mapState,
+  }: {
+    x: number;
+    y: number;
+    mapState: number;
+  }) => void;
+}

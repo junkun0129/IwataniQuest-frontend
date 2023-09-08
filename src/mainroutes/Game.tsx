@@ -8,54 +8,10 @@ import styles from "./Game.module.scss";
 import { useAppSelector } from "../store/store";
 import Battle2 from "../gamecompo/Battle2";
 import BattleDebag from "../gamecompo/BattleDebag";
+import useScreenSwitch from "../customhooks/useScreenSwitch";
 
 function Game({ socket }: socketType) {
-  const [screenNUm, setScreenNum] = useState(0);
-  const [battleMode, setBattleMode] = useState(false);
-  const fieldControl = useAnimationControls();
-  const battleControl = useAnimationControls();
-  const userStatuSelector = useAppSelector((state) => state.userStatusReducer);
-
-  useEffect(() => {
-    socket.on("screenSwitch", async (data) => {
-      setBattleMode(true);
-      console.log("entounttttttttttt");
-      await fieldControl.start({
-        scale: [1, 2, 0.5, 0.5, 3, 1, 0.5],
-        rotate: [0, 50, 20, 30, 20, 0, 0],
-        x: [0, 0, 0, 0, 0, 0, 0, 0, -300, 1500],
-        transition: { duration: 2 },
-      });
-
-      await battleControl.start({
-        x: [-1600, 400, 0, 0, 0],
-        scale: [0.7, 0.7, 0.7, 0.4, 1],
-        transition: { duration: 2 },
-      });
-
-      await socket.emit("encount", "encounted");
-    });
-
-    socket.on("backSwitch", async (data) => {
-      console.log("modoruzooo");
-
-      if (data === "backback") {
-        await battleControl.start({
-          x: [0, 0, 0, 400, -1600],
-          scale: [1, 0.7, 0.7, 0.4, 0.7],
-          transition: { duration: 2 },
-        });
-        await fieldControl.start({
-          scale: [0.5, 2, 0.5, 0.5, 3, 1, 1],
-          rotate: [0, 50, 20, 30, 20, 0, 0],
-          x: [1500, 300, 0, 0, 0, 0, 0, 0, 0, 0],
-          transition: { duration: 2 },
-        });
-
-        await socket.emit("back", "backbackdone");
-      }
-    });
-  }, [socket]);
+  const { fieldControl, battleControl } = useScreenSwitch({ socket });
 
   return (
     <>

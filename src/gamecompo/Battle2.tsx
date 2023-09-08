@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { socketType } from "./Field";
 import useEnemyData from "../customhooks/useEnemyData";
 import Genkiman from "../enemycompo/Genkiman";
 import Hentaiyou from "../enemycompo/Hentaiyou";
@@ -21,12 +20,16 @@ import { getAttackFromEnemy } from "../store/features/userStatuSlice";
 import { motion, useAnimationControls } from "framer-motion";
 import useHPBarAnimation from "../customhooks/useHPBarAnimation";
 import useSequence from "../customhooks/useSequence";
+import { sequenceType } from "../types/type";
+import { socketType } from "./Field";
 
 const enemyArr = [<Genkiman />, <Hentaiyou />, <Hukurou />];
 
 function Battle2({ socket }: socketType) {
   const enemyRefs = [useRef(null), useRef(null), useRef(null)];
-  const { enemyComponents } = useEnemyData({ socket });
+  const [sequence, setSequence] = useState<sequenceType>("field");
+
+  const { enemyComponents } = useEnemyData({ socket }, sequence);
   const enemy1Selector = useAppSelector((state) => state.enemy1Reducer);
   const enemy2Selector = useAppSelector((state) => state.enemy2Reducer);
   const enemy3Selector = useAppSelector((state) => state.enemy3Reducer);
@@ -44,16 +47,30 @@ function Battle2({ socket }: socketType) {
     useHPBarAnimation(hpGages[i], enemy.hp, enemy.MaxHp);
   });
   const dispatch = useAppDispatch();
-  const [sequence, setSequence] = useState<sequenceType>("start");
   const enemyControl1 = useAnimationControls();
   const enemyControl2 = useAnimationControls();
   const enemyControl3 = useAnimationControls();
   const enemyControls = [enemyControl1, enemyControl2, enemyControl3];
   const hpBarControl = useAnimationControls();
-  const { dialog } = useSequence(sequence, enemyControls, hpBarControl);
+  const { dialog, battleResult } = useSequence(
+    sequence,
+    enemyControls,
+    hpBarControl
+  );
+
+  useEffect(() => {
+    console.log(battleResult, "battleresult");
+    if (battleResult === "win") {
+      //go back socket
+      setSequence("field");
+    } else if (battleResult === "lose") {
+      //reset socket
+      setSequence("field");
+    }
+  }, [battleResult]);
+
   const handleDragEnd = (event) => {
     const collisionNum = collisionCheck(event, enemyRefs);
-    console.log(collisionNum, "nummmmmmmmm");
     if (collisionNum) {
       setSequence("player-action");
       dispatch(changeCollisionNum({ collisionNum: collisionNum }));
@@ -80,8 +97,13 @@ function Battle2({ socket }: socketType) {
         setSequence("player-turn");
       }
     }
+    if (sequence === "end-player-win") {
+      socket.emit("back", "backback");
+    }
   };
-
+  useEffect(() => {
+    console.log(enemyComponents, "compooooooooo");
+  }, [enemyComponents]);
   return (
     <>
       <h1>yattorukai</h1>
@@ -90,12 +112,12 @@ function Battle2({ socket }: socketType) {
           return (
             <motion.div
               animate={
-                enemySelectors[i].hp <= 0 ? { opacity: 0 } : { opacity: 1 }
+                enemySelectors[i]?.hp <= 0 ? { opacity: 0 } : { opacity: 1 }
               }
               ref={enemyRefs[i]}
               style={{ border: "black solid  2px", height: "250px" }}
             >
-              <div>{enemySelectors[i].name}</div>
+              <div>{enemySelectors[i]?.name}</div>
               <div
                 style={{ width: "60%", height: "7%", backgroundColor: "gray" }}
               >
@@ -105,7 +127,7 @@ function Battle2({ socket }: socketType) {
                     backgroundColor: "red",
                     height: "100%",
                     width: `${
-                      (enemySelectors[i].hp / enemySelectors[i].MaxHp) * 100
+                      (enemySelectors[i]?.hp / enemySelectors[i]?.MaxHp) * 100
                     }%`,
                   }}
                 ></motion.div>

@@ -12,9 +12,14 @@ import reuseValue from "../reuseValue";
 import Genkiman from "../enemycompo/Genkiman";
 import Hentaiyou from "../enemycompo/Hentaiyou";
 import Hukurou from "../enemycompo/Hukurou";
+import { sequenceType } from "../types/type";
+import { wait } from "../utils/wait";
 const enemyArr = [<Genkiman />, <Hentaiyou />, <Hukurou />];
-
-function useEnemyData({ socket }: socketType) {
+type Props = {
+  socket: socketType;
+  sequence: sequenceType;
+};
+function useEnemyData({ socket }: socketType, sequence: sequenceType) {
   const [enemyComponents, setEnemyComponents] = useState([]);
   const [error, setError] = useState(null);
   const dispatch = useAppDispatch();
@@ -24,6 +29,15 @@ function useEnemyData({ socket }: socketType) {
     (e: enemyStatusType) => dispatch(createEnemy2(e)),
     (e: enemyStatusType) => dispatch(createEnemy3(e)),
   ];
+  useEffect(() => {
+    const emptyCompo = async () => {
+      if (sequence === "end-player-win") {
+        // await wait(10000);
+        setEnemyComponents([]);
+      }
+    };
+    emptyCompo();
+  }, [sequence]);
   useEffect(() => {
     socket.on("screenSwitch", (data) => {
       console.log("gettttoooo");

@@ -13,9 +13,9 @@ import { Entity } from "./npc/Entity.js";
 import { Sounds } from "./Sounds.js";
 import { Book } from "./Book.js";
 import { Socket } from "socket.io-client";
-import { ServerToClientEvents, ClientToServerEvents } from "../App.js";
 import { getItemFromLocalState } from "./LocalState";
 import { OtherPlayers } from "./npc/OtherPlayers.js";
+import { ClientToServerEvents, ServerToClientEvents } from "../types/type.js";
 
 type statusType = {
   email: string;
@@ -90,6 +90,7 @@ export class GamePanel {
   public collisionDatas: number[][] = [];
   public mapsChange: boolean = true;
 
+  public encounterCoolDown: number = 0;
   public lastDoorNum: number = 0;
 
   public whoSpeakIndex: number = 0;
@@ -208,9 +209,9 @@ export class GamePanel {
       this.player.playerX = this.player.playerXOriginal;
       this.player.playerY = this.player.playerYOriginal;
     }
-
     // encount;
-    if (this.gameState === this.fieldScene) {
+    if (this.gameState === this.fieldScene && this.mapState === this.outField) {
+      this.encounterCoolDown -= 10;
       const encount = this.Encounter();
       if (
         encount &&
@@ -307,13 +308,15 @@ export class GamePanel {
   }
 
   public Encounter(): boolean {
-    const ramdomNum: number = Math.floor(Math.random() * 100);
+    if (this.encounterCoolDown <= 0) {
+      const ramdomNum: number = Math.floor(Math.random() * 100);
 
-    if (ramdomNum === 50) {
-      return true;
-    } else {
-      return false;
+      if (ramdomNum === 50) {
+        this.encounterCoolDown = 5000;
+        return true;
+      }
     }
+    return false;
   }
 }
 

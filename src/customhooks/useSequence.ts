@@ -8,6 +8,7 @@ import {
 } from "../store/features/enemySlice";
 import { getAttackFromEnemy } from "../store/features/userStatuSlice";
 import { changeCollisionNum } from "../store/features/battleStateSlice";
+import { battleRedultType, sequenceType } from "../types/type";
 
 const useSequence = (
   sequence: sequenceType,
@@ -15,6 +16,7 @@ const useSequence = (
   hpBarControl: AnimationControls
 ) => {
   const [dialog, setDialog] = useState("");
+  const [battleResult, setBattleResult] = useState<battleRedultType>(null);
   const dispatch = useAppDispatch();
   const collisionNum = useAppSelector(
     (state) => state.collisionNumReducer.collisionNum
@@ -85,10 +87,14 @@ const useSequence = (
 
           case "end-player-win": {
             setDialog("you defeated all the enemies!!");
+            setBattleResult("win");
+
             break;
           }
           case "end-player-lose": {
-            setDialog("you defeated all the enemies!!");
+            setDialog("you fainted.......");
+            setBattleResult("lose");
+
             break;
           }
           default:
@@ -100,7 +106,7 @@ const useSequence = (
     animateHpBar(); // Call the async function
   }, [sequence, collisionNum]);
 
-  return { dialog };
+  return { dialog, battleResult };
 };
 
 export default useSequence;
