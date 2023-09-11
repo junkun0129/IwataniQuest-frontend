@@ -36,6 +36,7 @@ const useSequence = (
       if (sequence) {
         switch (sequence) {
           case "start": {
+            console.log("iiiiiiii");
             setDialog("you ran into enemies!!!");
             break;
           }

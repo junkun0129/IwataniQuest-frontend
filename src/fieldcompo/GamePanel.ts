@@ -229,6 +229,15 @@ export class GamePanel {
       this.mapState = this.outField;
     });
 
+    this.socket.on("lose", (data) => {
+      this.player.playerX = this.status.status.x;
+      this.player.playerY = this.status.status.y;
+      this.gameState = this.fieldScene;
+      this.mapState = this.status.status.mapState;
+      this.mapsChange = true;
+      this.asset.setCollisions();
+      console.log("lll");
+    });
     this.socket.on("pedestrians", (data) => {
       for (let i: number = 0; i < data.length; i++) {
         this.otherPlayers[i] = new OtherPlayers(this);

@@ -31,6 +31,7 @@ type userType = {
 export interface ServerToClientEvents {
   screenSwitch: (hit: string) => void;
   backSwitch: (backback: string) => void;
+  lose: ((toGamePanel: string) => void) | ((toReact: string) => void);
   save: ({
     x,
     y,
@@ -66,6 +67,7 @@ export interface ClientToServerEvents {
   hello: () => void;
   oi: (input: string) => void;
   encount: (encount: string) => void;
+  lose: (toServer: string) => void;
   back: (backback: string) => void;
   save: ({
     x,

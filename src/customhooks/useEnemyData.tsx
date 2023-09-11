@@ -22,8 +22,8 @@ type Props = {
 function useEnemyData({ socket }: socketType, sequence: sequenceType) {
   const [enemyComponents, setEnemyComponents] = useState([]);
   const [error, setError] = useState(null);
+  const [isBattleStart, setIsBattleStart] = useState(false);
   const dispatch = useAppDispatch();
-
   const enemyDispatches = [
     (e: enemyStatusType) => dispatch(createEnemy1(e)),
     (e: enemyStatusType) => dispatch(createEnemy2(e)),
@@ -32,7 +32,7 @@ function useEnemyData({ socket }: socketType, sequence: sequenceType) {
   useEffect(() => {
     const emptyCompo = async () => {
       if (sequence === "end-player-win") {
-        // await wait(10000);
+        await wait(10000);
         setEnemyComponents([]);
       }
     };
@@ -66,14 +66,18 @@ function useEnemyData({ socket }: socketType, sequence: sequenceType) {
             );
             setEnemyComponents((pre) => [...pre, enemyCompo]);
           });
-
+          setIsBattleStart(true);
           console.log(data, ";lkj;kj;lkj");
         }
       });
     });
   }, [socket]);
 
-  return { enemyComponents };
+  useEffect(() => {
+    setIsBattleStart(false);
+  }, [sequence === "end-player-lose" || sequence === "end-player-win"]);
+
+  return { enemyComponents, isBattleStart };
 }
 
 export default useEnemyData;

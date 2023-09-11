@@ -22,17 +22,19 @@ import useHPBarAnimation from "../customhooks/useHPBarAnimation";
 import useSequence from "../customhooks/useSequence";
 import { sequenceType } from "../types/type";
 import { socketType } from "./Field";
-
 const enemyArr = [<Genkiman />, <Hentaiyou />, <Hukurou />];
 
 function Battle2({ socket }: socketType) {
   const enemyRefs = [useRef(null), useRef(null), useRef(null)];
   const [sequence, setSequence] = useState<sequenceType>("field");
 
-  const { enemyComponents } = useEnemyData({ socket }, sequence);
+  const { enemyComponents, isBattleStart } = useEnemyData({ socket }, sequence);
   const enemy1Selector = useAppSelector((state) => state.enemy1Reducer);
   const enemy2Selector = useAppSelector((state) => state.enemy2Reducer);
   const enemy3Selector = useAppSelector((state) => state.enemy3Reducer);
+  const collisionNumSlice = useAppSelector(
+    (state) => state.collisionNumReducer
+  );
   const playerStatus = useAppSelector(
     (state) => state.userStatusReducer.status
   );
@@ -69,13 +71,21 @@ function Battle2({ socket }: socketType) {
     }
   }, [battleResult]);
 
+  useEffect(() => {
+    setSequence("start");
+  }, [isBattleStart === true]);
   const handleDragEnd = (event) => {
     const collisionNum = collisionCheck(event, enemyRefs);
-    if (collisionNum) {
+    console.log(collisionNum, "nnnnnnnnnnnnnnn");
+    if (collisionNum !== null) {
       setSequence("player-action");
       dispatch(changeCollisionNum({ collisionNum: collisionNum }));
     }
   };
+
+  useEffect(() => {
+    console.log(collisionNumSlice, "9999999999");
+  }, [collisionNumSlice]);
 
   const handleClick = () => {
     const condition = (e: enemyStatusType) => e.hp <= 0;
@@ -100,63 +110,90 @@ function Battle2({ socket }: socketType) {
     if (sequence === "end-player-win") {
       socket.emit("back", "backback");
     }
+    if (sequence === "end-player-lose") {
+      socket.emit("lose", "toServer");
+    }
   };
   useEffect(() => {
     console.log(enemyComponents, "compooooooooo");
   }, [enemyComponents]);
   return (
     <>
-      <h1>yattorukai</h1>
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
-        {enemyComponents.map((enemyCompo, i) => {
-          return (
-            <motion.div
-              animate={
-                enemySelectors[i]?.hp <= 0 ? { opacity: 0 } : { opacity: 1 }
-              }
-              ref={enemyRefs[i]}
-              style={{ border: "black solid  2px", height: "250px" }}
-            >
-              <div>{enemySelectors[i]?.name}</div>
-              <div
-                style={{ width: "60%", height: "7%", backgroundColor: "gray" }}
-              >
-                <motion.div
-                  animate={hpGages[i]}
-                  style={{
-                    backgroundColor: "red",
-                    height: "100%",
-                    width: `${
-                      (enemySelectors[i]?.hp / enemySelectors[i]?.MaxHp) * 100
-                    }%`,
-                  }}
-                ></motion.div>
-              </div>
-              <motion.div animate={enemyControls[i]}>{enemyCompo}</motion.div>
-            </motion.div>
-          );
-        })}
-      </div>
       <div
         style={{
-          height: "30%",
-          marginTop: 20,
-          display: "flex",
-          justifyContent: "center",
+          backgroundImage: `url('img/battle1.jpg')`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          height: "100%",
+          width: "100%",
         }}
       >
-        <HPBar
-          animate={hpBarControl}
-          enemyRefs={enemyRefs}
-          drag
-          dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-          dragTransition={{ bounceStiffness: 500, bounceDamping: 20 }}
-          dragElastic={0.8}
-          whileTap={{ scale: 1.2 }}
-          onDragEnd={handleDragEnd}
-          dialog={dialog}
-          onTap={handleClick}
-        ></HPBar>
+        <h1>llll</h1>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+            width: "100%",
+          }}
+        >
+          {enemyComponents.map((enemyCompo, i) => {
+            return (
+              <motion.div
+                animate={
+                  enemySelectors[i]?.hp <= 0 ? { opacity: 0 } : { opacity: 1 }
+                }
+                ref={enemyRefs[i]}
+                style={{
+                  border: "black solid  2px",
+                  height: "250px",
+                  width: "20%",
+                }}
+              >
+                <div>{enemySelectors[i]?.name}</div>
+                <div
+                  style={{
+                    width: "60%",
+                    height: "7%",
+                    backgroundColor: "gray",
+                  }}
+                >
+                  <motion.div
+                    animate={hpGages[i]}
+                    style={{
+                      backgroundColor: "red",
+                      height: "100%",
+                      width: `${
+                        (enemySelectors[i]?.hp / enemySelectors[i]?.MaxHp) * 100
+                      }%`,
+                    }}
+                  ></motion.div>
+                </div>
+                <motion.div animate={enemyControls[i]}>{enemyCompo}</motion.div>
+              </motion.div>
+            );
+          })}
+        </div>
+        <div
+          style={{
+            height: "30%",
+            marginTop: 20,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <HPBar
+            animate={hpBarControl}
+            enemyRefs={enemyRefs}
+            drag
+            dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+            dragTransition={{ bounceStiffness: 500, bounceDamping: 20 }}
+            dragElastic={0.8}
+            whileTap={{ scale: 1.2 }}
+            onDragEnd={handleDragEnd}
+            dialog={dialog}
+            onTap={handleClick}
+          ></HPBar>
+        </div>
       </div>
     </>
   );
