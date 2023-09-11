@@ -30,7 +30,7 @@ function Game({ socket }: socketType) {
         >
           {/* <Battle socket={socket}></Battle> */}
           <Battle2 socket={socket}></Battle2>
-          <BattleDebag></BattleDebag>
+          {/* <BattleDebag></BattleDebag> */}
         </motion.div>
       </div>
     </>

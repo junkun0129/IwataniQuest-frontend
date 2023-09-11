@@ -42,19 +42,15 @@ function HP({
   startover,
   enemyAttackNum,
 }: dialogType) {
-  const hp = useAppSelector(
-    (state) => state.reducer.userStatusReducer.status.hp
-  );
+  const hp = useAppSelector((state) => state.userStatusReducer.status.hp);
   const mxHp = useAppSelector(
-    (state) => state.reducer.userStatusReducer.status.maxmumHp
+    (state) => state.userStatusReducer.status.maxmumHp
   );
-  const playerAT = useAppSelector(
-    (state) => state.reducer.userStatusReducer.status.at
-  );
+  const playerAT = useAppSelector((state) => state.userStatusReducer.status.at);
 
-  const enemy1Selector = useAppSelector((state) => state.reducer.enemy1Reducer);
-  const enemy2Selector = useAppSelector((state) => state.reducer.enemy2Reducer);
-  const enemy3Selector = useAppSelector((state) => state.reducer.enemy3Reducer);
+  const enemy1Selector = useAppSelector((state) => state.enemy1Reducer);
+  const enemy2Selector = useAppSelector((state) => state.enemy2Reducer);
+  const enemy3Selector = useAppSelector((state) => state.enemy3Reducer);
 
   const dispatch = useAppDispatch();
   const sceneStateMotionValue = useMotionValue(sceneState);
