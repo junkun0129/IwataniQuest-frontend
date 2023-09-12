@@ -163,14 +163,14 @@ function Battle2({ socket }: socketType) {
                   ></motion.div>
                 </div>
                 <motion.div animate={enemyControls[i]}>
-                  {/* {
-                    enemyArr.filter(
-                      (enemyCompo) =>
-                        enemyCompo.type.name === enemySelector.name
-                    )[0]
-                  } */}
-                  {enemyArr[i]}
-                  {enemySelector.name}
+                  {enemyArr.filter(
+                    (enemyCompo) => enemyCompo.type.name === enemySelector.name
+                  )[0]
+                    ? enemyArr.filter(
+                        (enemyCompo) =>
+                          enemyCompo.type.name === enemySelector.name
+                      )[0]
+                    : enemyArr[0]}
                 </motion.div>
               </motion.div>
             );
