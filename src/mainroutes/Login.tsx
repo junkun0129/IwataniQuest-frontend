@@ -52,6 +52,11 @@ function Login({ socket }: socketType) {
             })
           );
 
+          console.log(
+            data.status.mapState,
+            "oooooooooooooooooooooooooooooooooo"
+          );
+
           navigate("/game");
         }
       })
