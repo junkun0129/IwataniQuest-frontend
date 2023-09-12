@@ -169,7 +169,7 @@ function Battle2({ socket }: socketType) {
                         enemyCompo.type.name === enemySelector.name
                     )[0]
                   } */}
-                  {enemyArr[1]}
+                  {enemyArr[i]}
                   {enemySelector.name}
                 </motion.div>
               </motion.div>
