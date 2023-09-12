@@ -114,9 +114,7 @@ function Battle2({ socket }: socketType) {
       socket.emit("lose", "toServer");
     }
   };
-  useEffect(() => {
-    console.log(enemyComponents, "compooooooooo");
-  }, [enemyComponents]);
+
   return (
     <>
       <div
@@ -136,11 +134,11 @@ function Battle2({ socket }: socketType) {
             width: "100%",
           }}
         >
-          {enemyComponents.map((enemyCompo, i) => {
+          {enemySelectors.map((enemySelector, i) => {
             return (
               <motion.div
                 animate={
-                  enemySelectors[i]?.hp <= 0 ? { opacity: 0 } : { opacity: 1 }
+                  enemySelector?.hp <= 0 ? { opacity: 0 } : { opacity: 1 }
                 }
                 ref={enemyRefs[i]}
                 style={{
@@ -149,7 +147,7 @@ function Battle2({ socket }: socketType) {
                   width: "20%",
                 }}
               >
-                <div>{enemySelectors[i]?.name}</div>
+                <div>{enemySelector?.name}</div>
                 <div
                   style={{
                     width: "60%",
@@ -163,12 +161,19 @@ function Battle2({ socket }: socketType) {
                       backgroundColor: "red",
                       height: "100%",
                       width: `${
-                        (enemySelectors[i]?.hp / enemySelectors[i]?.MaxHp) * 100
+                        (enemySelector?.hp / enemySelector?.MaxHp) * 100
                       }%`,
                     }}
                   ></motion.div>
                 </div>
-                <motion.div animate={enemyControls[i]}>{enemyCompo}</motion.div>
+                <motion.div animate={enemyControls[i]}>
+                  {
+                    enemyArr.filter(
+                      (enemyCompo) =>
+                        enemyCompo.type.name === enemySelector.name
+                    )[0]
+                  }
+                </motion.div>
               </motion.div>
             );
           })}
