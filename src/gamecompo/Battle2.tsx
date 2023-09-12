@@ -83,10 +83,6 @@ function Battle2({ socket }: socketType) {
     }
   };
 
-  useEffect(() => {
-    console.log(collisionNumSlice, "9999999999");
-  }, [collisionNumSlice]);
-
   const handleClick = () => {
     const condition = (e: enemyStatusType) => e.hp <= 0;
     if (enemySelectors.every(condition)) {
@@ -167,12 +163,13 @@ function Battle2({ socket }: socketType) {
                   ></motion.div>
                 </div>
                 <motion.div animate={enemyControls[i]}>
-                  {
+                  {/* {
                     enemyArr.filter(
                       (enemyCompo) =>
                         enemyCompo.type.name === enemySelector.name
                     )[0]
-                  }
+                  } */}
+                  lllllll
                 </motion.div>
               </motion.div>
             );
