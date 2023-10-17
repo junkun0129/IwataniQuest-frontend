@@ -127,8 +127,8 @@ export class GamePanel {
   public collisionNPC: boolean = false;
   //public collisionArray:CollisionTile[] = this.collisionM.mapArrayCreate();
 
-  public screenWidth: number = 1500;
-  public screenHeight: number = 700;
+  public screenWidth: number = window.innerWidth;
+  public screenHeight: number = window.innerHeight;
 
   public worldWidth: number = 3840;
   public worldHeight: number = 2560;
@@ -147,6 +147,7 @@ export class GamePanel {
   public isTextApper: boolean = false;
   public textAppearPersonEmail: string = "";
   public textAppearPersonText: string | undefined = "";
+  customEventListeners: {};
 
   constructor(
     c: CanvasRenderingContext2D,
@@ -164,6 +165,7 @@ export class GamePanel {
 
     this.socket = socket;
     this.c = c;
+    this.customEventListeners = {};
   }
 
   public setup(): void {
@@ -218,8 +220,8 @@ export class GamePanel {
         this.gameState !== this.battleScene &&
         this.mapState === this.outField
       ) {
-        console.log("hit");
         this.socket.emit("encount", "hit");
+        this.emitCustomEvent("hit", "hit");
         this.gameState = this.battleScene;
       }
     }
@@ -326,6 +328,20 @@ export class GamePanel {
       }
     }
     return false;
+  }
+  on(event: string, listener: Function) {
+    if (!this.customEventListeners[event]) {
+      this.customEventListeners[event] = [];
+    }
+    this.customEventListeners[event].push(listener);
+  }
+  // カスタムイベントを発行するメソッド
+  public emitCustomEvent(event: string, data: any) {
+    if (this.customEventListeners[event]) {
+      for (const listener of this.customEventListeners[event]) {
+        listener(data);
+      }
+    }
   }
 }
 

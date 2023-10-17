@@ -1,19 +1,23 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-export type battleStateSliceType = {
-  state: number;
+
+//slice1
+export type encountStateSliceType = {
+  isEncount: boolean;
 };
 
-const initialState: battleStateSliceType = { state: 0 };
+const initialState: encountStateSliceType = { isEncount: false };
 
-export const battleStateSlice = createSlice({
+export const encountStateSlice = createSlice({
   name: "state",
   initialState,
   reducers: {
-    changeState: (state, action: PayloadAction<{ state: number }>) => {
-      state.state = action.payload.state;
+    changeState: (state, action: PayloadAction<{ isEncount: boolean }>) => {
+      state.isEncount = action.payload.isEncount;
     },
   },
 });
+
+//slice2
 export type collisionNumSliceType = {
   collisionNum: number | null;
 };
@@ -35,5 +39,5 @@ export const collisionNumSlice = createSlice({
 
 export const collisionNumReducer = collisionNumSlice.reducer;
 export const { changeCollisionNum } = collisionNumSlice.actions;
-export const battleStateReducer = battleStateSlice.reducer;
-export const { changeState } = battleStateSlice.actions;
+export const encountStateReducer = encountStateSlice.reducer;
+export const { changeState } = encountStateSlice.actions;

@@ -9,6 +9,7 @@ import { useAppSelector } from "../store/store";
 import Battle2 from "../gamecompo/Battle2";
 import BattleDebag from "../gamecompo/BattleDebag";
 import useScreenSwitch from "../customhooks/useScreenSwitch";
+import Field2 from "../gamecompo/Field2";
 
 function Game({ socket }: socketType) {
   const { fieldControl, battleControl } = useScreenSwitch({ socket });
@@ -21,6 +22,7 @@ function Game({ socket }: socketType) {
           style={{ position: "absolute", width: "100vw", height: "100vh" }}
         >
           <Field socket={socket}></Field>
+          {/* <Field2></Field2> */}
         </motion.div>
 
         <motion.div
@@ -30,7 +32,7 @@ function Game({ socket }: socketType) {
         >
           {/* <Battle socket={socket}></Battle> */}
           <Battle2 socket={socket}></Battle2>
-          {/* <BattleDebag></BattleDebag> */}
+          <BattleDebag></BattleDebag>
         </motion.div>
       </div>
     </>

@@ -95,7 +95,7 @@ const useSequence = (
           case "end-player-lose": {
             setDialog("you fainted.......");
             setBattleResult("lose");
-
+            
             break;
           }
           default:

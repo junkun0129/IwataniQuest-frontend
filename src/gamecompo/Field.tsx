@@ -11,6 +11,10 @@ import { useAppDispatch, useAppSelector } from "../store/store";
 import reuseValue from "../reuseValue";
 import { afterSave, createUser } from "../store/features/userStatuSlice";
 import { ClientToServerEvents, ServerToClientEvents } from "../types/type";
+import {
+  changeState,
+  encountStateSlice,
+} from "../store/features/battleStateSlice";
 
 export type socketType = {
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;
@@ -37,6 +41,12 @@ function Field({ socket }: socketType) {
 
   useEffect(() => {
     game?.setup();
+  }, [game]);
+  useEffect(() => {
+    game?.on("hit", (data) => {
+      console.log(data);
+      dispatch(changeState({ isEncount: true }));
+    });
   }, [game]);
 
   useEffect(() => {
@@ -69,9 +79,7 @@ function Field({ socket }: socketType) {
     });
   }, [socket]);
 
-  useEffect(() => {
-    console.log(";lkj");
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     console.log(isAppearInput, "iiii");

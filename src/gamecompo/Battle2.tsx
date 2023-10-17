@@ -6,10 +6,7 @@ import Hukurou from "../enemycompo/Hukurou";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import HPBar from "../component/HPBar";
 import EnemyWrapper from "../utils/EnemyWrapper";
-import {
-  battleStateSliceType,
-  changeCollisionNum,
-} from "../store/features/battleStateSlice";
+import { changeCollisionNum } from "../store/features/battleStateSlice";
 import {
   atackEnemy1,
   atackEnemy2,

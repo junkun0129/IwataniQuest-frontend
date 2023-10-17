@@ -7,7 +7,7 @@ import {
   enemyDataStatusType,
   enemyStatusType,
 } from "../store/features/enemySlice";
-import { useAppDispatch } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../store/store";
 import reuseValue from "../reuseValue";
 import Genkiman from "../enemycompo/Genkiman";
 import Hentaiyou from "../enemycompo/Hentaiyou";
@@ -15,6 +15,10 @@ import Hukurou from "../enemycompo/Hukurou";
 import { sequenceType } from "../types/type";
 import { wait } from "../utils/wait";
 import { enemiesData } from "../assets/enemiesData";
+import {
+  changeState,
+  encountStateReducer,
+} from "../store/features/battleStateSlice";
 const enemyArr = [<Genkiman />, <Hentaiyou />, <Hukurou />];
 type Props = {
   socket: socketType;
@@ -24,6 +28,9 @@ function useEnemyData({ socket }: socketType, sequence: sequenceType) {
   const [enemyComponents, setEnemyComponents] = useState([]);
   const [error, setError] = useState(null);
   const [isBattleStart, setIsBattleStart] = useState(false);
+  const encountStateSelector = useAppSelector(
+    (state) => state.encountStateReducer
+  );
   const dispatch = useAppDispatch();
   const enemyDispatches = [
     (e: enemyStatusType) => dispatch(createEnemy1(e)),
@@ -40,9 +47,11 @@ function useEnemyData({ socket }: socketType, sequence: sequenceType) {
     emptyCompo();
   }, [sequence]);
   useEffect(() => {
-    socket.on("screenSwitch", async (data) => {
-      console.log("gettttoooo");
+    if (encountStateSelector) {
+      //reset encounter
+      dispatch(changeState({ isEncount: false }));
 
+      //fetch enemies's data
       fetch(`${reuseValue.serverURL}/enemy/create`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -52,7 +61,6 @@ function useEnemyData({ socket }: socketType, sequence: sequenceType) {
           else if (response.status === 404) setError("user doesnot exist");
           else setError("Something went wrong :<");
         } else {
-          console.log("enemiiiiiiiikittaaa");
           const data: Array<enemyDataStatusType> = await response.json();
           data.forEach((enemy, i) => {
             enemyDispatches[i]({
@@ -69,38 +77,11 @@ function useEnemyData({ socket }: socketType, sequence: sequenceType) {
             setEnemyComponents((pre) => [...pre, enemyCompo]);
           });
           setIsBattleStart(true);
-          console.log(data, ";lkj;kj;lkj");
         }
       });
+    }
+  }, [encountStateSelector]);
 
-      // const generateAndDispatchEnemies = async () => {
-      //   for (let i = 0; i <= 2; i++) {
-      //     const randomNum = Math.floor(Math.random() * 3) + 1;
-      //     const chosenOne = enemiesData[randomNum];
-      //     enemyDispatches[i]({
-      //       name: chosenOne.name,
-      //       hp: chosenOne.hp,
-      //       at: chosenOne.at,
-      //       exp: chosenOne.exp,
-      //       MaxHp: chosenOne.hp,
-      //     });
-      //     const enemyCompo = enemyArr.filter(
-      //       (e) => e.type.name === chosenOne.name
-      //     );
-      //     setEnemyComponents((pre) => [...pre, enemyCompo]);
-      //   }
-      // };
-
-      // // Call the function to generate and dispatch enemies
-      // await generateAndDispatchEnemies();
-      // console.log(enemyComponents, "ooo");
-      // // Now, set IsBattleStart to true
-      // setIsBattleStart(true);
-    });
-  }, [socket]);
-  useEffect(() => {
-    console.log(enemyComponents, "enemycompo");
-  }, [enemyComponents]);
   useEffect(() => {
     setIsBattleStart(false);
   }, [sequence === "end-player-lose" || sequence === "end-player-win"]);

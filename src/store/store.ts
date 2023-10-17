@@ -11,7 +11,7 @@ import { enemy2Reducer } from "./features/enemySlice";
 import { enemy3Reducer } from "./features/enemySlice";
 import userStatusReducer from "./features/userStatuSlice";
 import {
-  battleStateReducer,
+  encountStateReducer,
   collisionNumReducer,
 } from "./features/battleStateSlice";
 
@@ -26,7 +26,7 @@ const reducer = combineReducers({
   enemy2Reducer,
   enemy3Reducer,
   userStatusReducer,
-  battleStateReducer,
+  encountStateReducer,
   collisionNumReducer,
 });
 
