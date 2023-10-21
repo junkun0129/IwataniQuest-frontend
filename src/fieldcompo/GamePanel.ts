@@ -19,6 +19,7 @@ import {
   ClientToServerEvents,
   ServerToClientEvents,
   battleResultType,
+  onFromGamePanelType,
 } from "../types/type.js";
 import { userSliceType } from "../store/features/userStatuSlice.js";
 
@@ -193,9 +194,9 @@ export class GamePanel {
     this.mapState = this.status.status.mapState;
 
     // developer mode
-    this.player.playerX = 2700;
+    this.player.playerX = 2800;
     this.player.playerY = 2300;
-    this.mapState = this.firstVillage;
+    this.mapState = this.field1;
 
     this.gameloop();
   }
@@ -217,14 +218,6 @@ export class GamePanel {
       }
     }
 
-    //start over
-    if (this.gameStartOver) {
-      this.asset.setObject();
-      localStorage.removeItem("itemInventory");
-      this.player.itemInventory = [];
-      this.player.playerX = this.player.playerXOriginal;
-      this.player.playerY = this.player.playerYOriginal;
-    }
     // encount;
     if (this.gameState === this.fieldScene && this.mapState === this.outField) {
       this.encounterCoolDown -= 10;
@@ -234,7 +227,7 @@ export class GamePanel {
         this.gameState !== this.battleScene &&
         this.mapState === this.outField
       ) {
-        this.emitFromGamePanel("hit", "hit");
+        this.emitFromGamePanel("encountEnemies", "hit");
         this.gameState = this.battleScene;
       }
     }
@@ -245,7 +238,6 @@ export class GamePanel {
     }
 
     if (this.battleResult === "lose") {
-      console.log("loseeeeeeeeee");
       this.player.playerX = this.status.status.x;
       this.player.playerY = this.status.status.y;
       this.gameState = this.fieldScene;
@@ -253,41 +245,6 @@ export class GamePanel {
       this.mapsChange = true;
       this.asset.setCollisions();
     }
-
-    this.socket.on("pedestrians", (data) => {
-      for (let i: number = 0; i < data.length; i++) {
-        this.otherPlayers[i] = new OtherPlayers(this);
-        this.otherPlayers[i].npcX = data[i].x;
-        this.otherPlayers[i].npcY = data[i].y;
-        this.otherPlayers[i].picture = "/img/main.png";
-        this.otherPlayers[i].direction = "down";
-        this.otherPlayers[i].email = data[i].email;
-      }
-      // console.log(this.otherPlayers);
-    });
-
-    this.socket.on("textOpentoField", (data) => {
-      if (data === "open") this.gameState = this.playerChattingScene;
-      if (data === "close") this.gameState = this.fieldScene;
-    });
-
-    this.socket.on("textAppear", (data) => {
-      // console.log(data, "junjun");
-      this.isTextApper = true;
-      const sameperson = this.otherPlayers.filter(
-        (element) => element.email === data.email
-      );
-
-      this.textAppearPersonEmail = sameperson[0].email;
-      this.textAppearPersonText = data.text;
-      // console.log(sameperson[0].email);
-    });
-
-    this.socket.on("saveDoneToGP", (data) => {
-      console.log(data, "+;l;;;;;;;");
-      this.player.playerX = data.x;
-      this.player.playerY = data.y;
-    });
 
     requestAnimationFrame(this.gameloop.bind(this));
   }
@@ -333,7 +290,7 @@ export class GamePanel {
 
   public Encounter(): boolean {
     if (this.encounterCoolDown <= 0) {
-      const ramdomNum: number = Math.floor(Math.random() * 100000000);
+      const ramdomNum: number = Math.floor(Math.random() * 1000000000);
 
       if (ramdomNum === 50) {
         this.encounterCoolDown = 5000;
@@ -342,13 +299,14 @@ export class GamePanel {
     }
     return false;
   }
-  onFromGamePanel(event: string, listener: Function) {
+
+  onFromGamePanel(event: onFromGamePanelType, listener: Function) {
     if (!this.customEventListeners[event]) {
       this.customEventListeners[event] = [];
     }
     this.customEventListeners[event].push(listener);
   }
-  public emitFromGamePanel(event: string, data: any) {
+  public emitFromGamePanel(event: onFromGamePanelType, data: any) {
     if (this.customEventListeners[event]) {
       for (const listener of this.customEventListeners[event]) {
         listener(data);
@@ -361,23 +319,3 @@ export class GamePanel {
     this.battleResult = battleResult;
   }
 }
-
-//start game
-// function start():void{
-
-//     window.onload = ()=>{
-//         let iwatani = new GamePanel;
-
-//         iwatani.setup();
-//     }
-// }
-
-// start();
-
-// console.log("iwataniiiiii");
-
-// let iwatani = new GamePanel;
-// iwatani.setup();
-// window.onload = ()=>{
-//     iwatani.gameloop();
-// }

@@ -1,7 +1,7 @@
 import { GamePanel } from "./GamePanel.js";
 export class Player {
   public gp: GamePanel;
-  public direction: string;
+  public direction: "up" | "down" | "left" | "right";
   public playerX: number;
   public playerY: number;
   public playerXOriginal: number;
@@ -50,31 +50,33 @@ export class Player {
     ) {
       if (this.gp.keyH.downPressed === true) {
         this.direction = "down";
-        console.log("down");
+        // console.log("down");
       }
       if (this.gp.keyH.upPressed === true) {
         this.direction = "up";
-        console.log("up");
+        // console.log("up");
       }
       if (this.gp.keyH.leftPressed === true) {
         this.direction = "left";
-        console.log("left");
+        // console.log("left");
       }
       if (this.gp.keyH.rightPressed === true) {
         this.direction = "right";
-        console.log("right");
+        // console.log("right");
       }
 
       this.gp.collision = false;
 
       //player to collision
-      this.gp.collisionC.checkCollisionEntity(this.direction);
+      this.gp.collisionC.checkCollisionTile(this.direction);
 
       //intract with NPC
-      let NPCbumped = this.gp.collisionC.CheckCollisionPlayerToEntity(
-        this.direction
-      );
-      this.intaractNPC(NPCbumped);
+      let bumpedNPCNum = 999;
+      this.gp.collisionC.collisonCheckerNPC(this.direction, (collisionNum) => {
+        console.log(collisionNum, ";lkj;lkj;lkj;lkj;lk");
+        bumpedNPCNum = collisionNum;
+      });
+      this.intaractNPC(bumpedNPCNum);
 
       //intract with object
       let deleteIndex = this.gp.collisionC.CheckCollisionObject(this.direction);
@@ -98,22 +100,22 @@ export class Player {
         switch (this.direction) {
           case "down": {
             this.playerY += this.speed;
-            console.log(this.direction);
+            // console.log(this.direction);
             break;
           }
           case "up": {
             this.playerY -= this.speed;
-            console.log(this.direction);
+            // console.log(this.direction);
             break;
           }
           case "left": {
             this.playerX -= this.speed;
-            console.log(this.direction);
+            // console.log(this.direction);
             break;
           }
           case "right": {
             this.playerX += this.speed;
-            console.log(this.direction);
+            // console.log(this.direction);
             break;
           }
         }
@@ -130,9 +132,10 @@ export class Player {
         this.spriteCounter = 0;
       }
 
-      //coodinates
-      console.log("this is x", this.playerX);
-      console.log("this is y", this.playerY);
+      // //coodinates
+      // console.log("this is x", this.playerX);
+      // console.log("this is y", this.playerY);
+
       this.gp.socket.emit("walk", {
         name: this.gp.status.name,
         email: this.gp.status.email,
@@ -144,7 +147,7 @@ export class Player {
 
   public intaractNPC(i: number) {
     if (i !== 999) {
-      console.log(this.gp.npc[i]);
+      console.log(i, "hhhhhhhhhhhhhhhhhhhhhh");
       this.gp.whoSpeakIndex = i;
       this.gp.gameState = this.gp.talkingScene;
       this.gp.npc[i].speak();

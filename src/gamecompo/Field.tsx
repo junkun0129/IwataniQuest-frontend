@@ -14,6 +14,7 @@ import {
   changeEncountState,
 } from "../store/features/StatesSlice";
 import { store } from "../store/store";
+import { useGamePanelListener } from "../customhooks/useGamePanelListener";
 export type socketType = {
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 };
@@ -50,12 +51,13 @@ function Field({ socket }: socketType) {
   });
 
   //data from GamePanel
-  useEffect(() => {
-    game?.onFromGamePanel("hit", (data) => {
-      console.log(data);
-      dispatch(changeEncountState(true));
-    });
-  }, [game]);
+  // useEffect(() => {
+  //   game?.onFromGamePanel("encountEnemies", (data) => {
+  //     console.log(data);
+  //     dispatch(changeEncountState(true));
+  //   });
+  // }, [game]);
+  useGamePanelListener(game);
 
   useEffect(() => {
     socket.on("save", (data) => {
