@@ -25,7 +25,9 @@ function Field({ socket }: socketType) {
   const [isAppearInput, setIsAppearInput] = useState<boolean>(false);
   const [chat, setChat] = useState<string>("");
   const dispatch = useAppDispatch();
-
+  const battleResult = useAppSelector(
+    (state) => state.StatesReducer.battleResult
+  );
   //create GamePanel instance
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -43,7 +45,7 @@ function Field({ socket }: socketType) {
   //data to GamePanel
   store.subscribe(() => {
     if (game) {
-      game.emitFromRedux(user.status.hp);
+      game.emitFromRedux(user, battleResult);
     }
   });
 
@@ -53,8 +55,6 @@ function Field({ socket }: socketType) {
       console.log(data);
       dispatch(changeEncountState(true));
     });
-
-    console.log(game?.booleannnn, "lklkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
   }, [game]);
 
   useEffect(() => {

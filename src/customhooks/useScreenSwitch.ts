@@ -2,11 +2,14 @@ import { useEffect } from "react";
 import { socketType } from "../gamecompo/Field";
 import { useAnimationControls } from "framer-motion";
 import { useAppSelector } from "../store/store";
+import { changeBattleResult } from "../store/features/StatesSlice";
+import { useDispatch } from "react-redux";
 
 const useScreenSwitch = ({ socket }: socketType) => {
   const fieldControl = useAnimationControls();
   const battleControl = useAnimationControls();
   const isEncount = useAppSelector((state) => state.StatesReducer.encountState);
+  const dispatch = useDispatch();
   const sequence = useAppSelector(
     (state) => state.StatesReducer.battleSequence
   );
@@ -51,7 +54,6 @@ const useScreenSwitch = ({ socket }: socketType) => {
   }, [isEncount === true]);
 
   useEffect(() => {
-    console.log(sequence, "lkjljljjljljlkjlkjlkjlijlkjljilij");
     const winOrEscape = async () => {
       await battleControl.start({
         x: [0, 0, 0, 400, -1600],
@@ -64,9 +66,11 @@ const useScreenSwitch = ({ socket }: socketType) => {
         x: [1500, 300, 0, 0, 0, 0, 0, 0, 0, 0],
         transition: { duration: 2 },
       });
+
+      await dispatch(changeBattleResult("off"));
     };
 
-    if (sequence === "end-player-lose") {
+    if (sequence === "field") {
       winOrEscape();
     }
   }, [sequence]);

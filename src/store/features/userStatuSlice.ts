@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type initialStateType = {
+export type userSliceType = {
   userId: string;
   email: string;
   name: string;
@@ -16,7 +16,7 @@ type initialStateType = {
     mapState: number;
   };
 };
-const initialState: initialStateType = {
+const initialState: userSliceType = {
   userId: "",
   email: "",
   name: "",
@@ -37,7 +37,7 @@ export const userStatusSlice = createSlice({
   name: "userStatus",
   initialState,
   reducers: {
-    createUser: (state, action: PayloadAction<initialStateType>) => {
+    createUser: (state, action: PayloadAction<userSliceType>) => {
       (state.userId = action.payload.userId),
         (state.email = action.payload.email),
         (state.name = action.payload.name),

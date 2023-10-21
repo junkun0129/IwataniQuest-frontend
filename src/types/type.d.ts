@@ -7,7 +7,6 @@ type sequenceType =
   | "end-player-lose"
   | "field";
 
-type battleRedultType = "win" | "lose" | null;
 type walkType = {
   name: string;
   email: string;
@@ -97,3 +96,4 @@ export interface ClientToServerEvents {
     mapState: number;
   }) => void;
 }
+export type battleResultType = "off" | "win" | "lose" | "escape";

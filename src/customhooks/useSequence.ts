@@ -8,15 +8,13 @@ import {
 } from "../store/features/enemySlice";
 import { getAttackFromEnemy } from "../store/features/userStatuSlice";
 import { changeCollisionNum } from "../store/features/battleStateSlice";
-import { battleRedultType, sequenceType } from "../types/type";
-import { changeEncountState } from "../store/features/StatesSlice";
+import { changeBattleResult } from "../store/features/StatesSlice";
 
 const useSequence = (
   enemyControls: AnimationControls[],
   hpBarControl: AnimationControls
 ) => {
   const [dialog, setDialog] = useState("");
-  const [battleResult, setBattleResult] = useState<battleRedultType>(null);
   const dispatch = useAppDispatch();
 
   const collisionNum = useAppSelector(
@@ -25,6 +23,7 @@ const useSequence = (
   const playerStatus = useAppSelector(
     (state) => state.userStatusReducer.status
   );
+  const result = useAppSelector((state) => state.StatesReducer.battleResult);
   const enemy1Selector = useAppSelector((state) => state.enemy1Reducer);
   const enemy2Selector = useAppSelector((state) => state.enemy2Reducer);
   const enemy3Selector = useAppSelector((state) => state.enemy3Reducer);
@@ -41,7 +40,6 @@ const useSequence = (
       if (battleSequence) {
         switch (battleSequence) {
           case "start": {
-            console.log("iiiiiiii");
             setDialog("you ran into enemies!!!");
             break;
           }
@@ -90,17 +88,13 @@ const useSequence = (
             dispatch(getAttackFromEnemy({ attack: enemySelectors[AINum].at }));
             break;
           }
-
           case "end-player-win": {
+            console.log("end-player-win in useSequence");
             setDialog("you defeated all the enemies!!");
-            setBattleResult("win");
-
             break;
           }
           case "end-player-lose": {
             setDialog("you fainted.......");
-            setBattleResult("lose");
-
             break;
           }
           default:
@@ -112,7 +106,7 @@ const useSequence = (
     animateHpBar(); // Call the async function
   }, [battleSequence, collisionNum]);
 
-  return { dialog, battleResult };
+  return { dialog };
 };
 
 export default useSequence;

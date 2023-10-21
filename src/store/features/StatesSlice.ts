@@ -1,16 +1,21 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { sequenceType } from "../../types/type";
+import { battleResultType, sequenceType } from "../../types/type";
 
-type initialStateType = { battleSequence: sequenceType; encountState: boolean };
+export type statesSliceType = {
+  battleSequence: sequenceType;
+  encountState: boolean;
+  battleResult: battleResultType;
+};
 
-const initialState: initialStateType = {
+const statesInitial: statesSliceType = {
   battleSequence: "field",
   encountState: false,
+  battleResult: "off",
 };
 
 export const StatesSlice = createSlice({
   name: "states",
-  initialState,
+  initialState: statesInitial,
   reducers: {
     changeBattleSequence: (state, action: PayloadAction<sequenceType>) => {
       state.battleSequence = action.payload;
@@ -18,8 +23,12 @@ export const StatesSlice = createSlice({
     changeEncountState: (state, action: PayloadAction<boolean>) => {
       state.encountState = action.payload;
     },
+    changeBattleResult: (state, action: PayloadAction<battleResultType>) => {
+      state.battleResult = action.payload;
+    },
   },
 });
 
 export const StatesReducer = StatesSlice.reducer;
-export const { changeBattleSequence, changeEncountState } = StatesSlice.actions;
+export const { changeBattleSequence, changeEncountState, changeBattleResult } =
+  StatesSlice.actions;

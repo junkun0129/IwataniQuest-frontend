@@ -19,7 +19,10 @@ import useHPBarAnimation from "../customhooks/useHPBarAnimation";
 import useSequence from "../customhooks/useSequence";
 import { sequenceType } from "../types/type";
 import { socketType } from "./Field";
-import { changeBattleSequence } from "../store/features/StatesSlice";
+import {
+  changeBattleResult,
+  changeBattleSequence,
+} from "../store/features/StatesSlice";
 const enemyArr = [<Genkiman />, <Hentaiyou />, <Hukurou />];
 
 function Battle2({ socket }: socketType) {
@@ -28,7 +31,7 @@ function Battle2({ socket }: socketType) {
   const sequence = useAppSelector(
     (state) => state.StatesReducer.battleSequence
   );
-  const { isEnemiesSet } = useEnemyData();
+  const { isEnemiesSet, setIsEnemiesSet } = useEnemyData();
 
   const enemy1Selector = useAppSelector((state) => state.enemy1Reducer);
   const enemy2Selector = useAppSelector((state) => state.enemy2Reducer);
@@ -47,6 +50,7 @@ function Battle2({ socket }: socketType) {
   enemySelectors.forEach((enemy, i) => {
     useHPBarAnimation(hpGages[i], enemy.hp, enemy.MaxHp);
   });
+
   const dispatch = useAppDispatch();
 
   const enemyControl1 = useAnimationControls();
@@ -54,20 +58,24 @@ function Battle2({ socket }: socketType) {
   const enemyControl3 = useAnimationControls();
   const enemyControls = [enemyControl1, enemyControl2, enemyControl3];
   const hpBarControl = useAnimationControls();
-  const { dialog, battleResult } = useSequence(enemyControls, hpBarControl);
+
+  const { dialog } = useSequence(enemyControls, hpBarControl);
+
+  const battleResult = useAppSelector(
+    (state) => state.StatesReducer.battleResult
+  );
 
   useEffect(() => {
     if (battleResult === "win") {
-      //go back socket
       dispatch(changeBattleSequence("field"));
     } else if (battleResult === "lose") {
-      //reset socket
       dispatch(changeBattleSequence("field"));
     }
   }, [battleResult]);
 
   useEffect(() => {
     dispatch(changeBattleSequence("start"));
+    setIsEnemiesSet(false);
   }, [isEnemiesSet === true]);
 
   const handleDragEnd = (event) => {
@@ -80,11 +88,12 @@ function Battle2({ socket }: socketType) {
 
   const handleClick = () => {
     const condition = (e: enemyStatusType) => e.hp <= 0;
-    if (enemySelectors.every(condition)) {
-      dispatch(changeBattleSequence("end-player-win"));
-    }
     if (sequence === "start") {
       dispatch(changeBattleSequence("player-turn"));
+    }
+    if (enemySelectors.every(condition)) {
+      console.log("alll defeated");
+      dispatch(changeBattleSequence("end-player-win"));
     }
     if (sequence === "player-action") {
       dispatch(changeBattleSequence("enemy-action"));
@@ -99,10 +108,13 @@ function Battle2({ socket }: socketType) {
       }
     }
     if (sequence === "end-player-win") {
-      socket.emit("back", "backback");
+      console.log("pushed after win ");
+      dispatch(changeBattleResult("win"));
+      dispatch(changeBattleSequence("field"));
     }
     if (sequence === "end-player-lose") {
-      socket.emit("lose", "toServer");
+      dispatch(changeBattleResult("lose"));
+      dispatch(changeBattleSequence("field"));
     }
   };
 

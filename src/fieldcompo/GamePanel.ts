@@ -15,23 +15,28 @@ import { Book } from "./Book.js";
 import { Socket } from "socket.io-client";
 import { getItemFromLocalState } from "./LocalState";
 import { OtherPlayers } from "./npc/OtherPlayers.js";
-import { ClientToServerEvents, ServerToClientEvents } from "../types/type.js";
+import {
+  ClientToServerEvents,
+  ServerToClientEvents,
+  battleResultType,
+} from "../types/type.js";
+import { userSliceType } from "../store/features/userStatuSlice.js";
 
-type statusType = {
-  email: string;
-  name: string;
-  status: {
-    at: number;
-    exp: number;
-    requireExp: number;
-    hp: number;
-    level: number;
-    x: number;
-    y: number;
-    mapState: number;
-  };
-  userId: string;
-};
+// type statusType = {
+//   email: string;
+//   name: string;
+//   status: {
+//     at: number;
+//     exp: number;
+//     requireExp: number;
+//     hp: number;
+//     level: number;
+//     x: number;
+//     y: number;
+//     mapState: number;
+//   };
+//   userId: string;
+// };
 
 type pedestriandsType = {
   name: string;
@@ -41,6 +46,7 @@ type pedestriandsType = {
 };
 
 const damiStatus = {
+  userId: "",
   email: "",
   name: "",
   status: {
@@ -48,12 +54,12 @@ const damiStatus = {
     exp: 0,
     requireExp: 0,
     hp: 0,
+    maxmumHp: 0,
     level: 0,
     x: 0,
     y: 0,
     mapState: 0,
   },
-  userId: "",
 };
 
 export class GamePanel {
@@ -139,7 +145,7 @@ export class GamePanel {
 
   public showCoodinates: boolean = true;
 
-  public status: statusType = damiStatus;
+  public status: userSliceType = damiStatus;
 
   public pedestrians: pedestriandsType[] = [];
   public otherPlayers: OtherPlayers[] = [];
@@ -149,8 +155,8 @@ export class GamePanel {
   public textAppearPersonText: string | undefined = "";
   customEventListeners: {};
   eventListeners: Map<any, any>;
-  public booleannnn = false;
-  public numberrrr = 0;
+
+  public battleResult: battleResultType = null;
   constructor(
     c: CanvasRenderingContext2D,
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
@@ -185,7 +191,12 @@ export class GamePanel {
     this.player.playerX = this.status.status.x;
     this.player.playerY = this.status.status.y;
     this.mapState = this.status.status.mapState;
-    console.log(this.player.playerX);
+
+    // developer mode
+    this.player.playerX = 2700;
+    this.player.playerY = 2300;
+    this.mapState = this.firstVillage;
+
     this.gameloop();
   }
 
@@ -223,27 +234,26 @@ export class GamePanel {
         this.gameState !== this.battleScene &&
         this.mapState === this.outField
       ) {
-        this.socket.emit("encount", "hit");
         this.emitFromGamePanel("hit", "hit");
         this.gameState = this.battleScene;
-        this.booleannnn = true;
       }
     }
-
-    this.socket.on("backSwitch", (data) => {
+    // console.log(this.battleResult, "battleresult");
+    if (this.battleResult === "win") {
       this.gameState = this.fieldScene;
       this.mapState = this.outField;
-    });
+    }
 
-    this.socket.on("lose", (data) => {
+    if (this.battleResult === "lose") {
+      console.log("loseeeeeeeeee");
       this.player.playerX = this.status.status.x;
       this.player.playerY = this.status.status.y;
       this.gameState = this.fieldScene;
       this.mapState = this.status.status.mapState;
       this.mapsChange = true;
       this.asset.setCollisions();
-      console.log("lll");
-    });
+    }
+
     this.socket.on("pedestrians", (data) => {
       for (let i: number = 0; i < data.length; i++) {
         this.otherPlayers[i] = new OtherPlayers(this);
@@ -268,7 +278,6 @@ export class GamePanel {
         (element) => element.email === data.email
       );
 
-      console.log(sameperson);
       this.textAppearPersonEmail = sameperson[0].email;
       this.textAppearPersonText = data.text;
       // console.log(sameperson[0].email);
@@ -347,15 +356,9 @@ export class GamePanel {
     }
   }
 
-  emitFromRedux(data: number) {
-    // if (this.eventListeners.has(event)) {
-    //   for (const listener of this.eventListeners.get(event)) {
-    //     listener(data);
-    //   }
-    // }
-    this.numberrrr = data;
-
-    console.log(this.numberrrr, "lksdlskdslkdsldksklskdl");
+  emitFromRedux(user: userSliceType, battleResult: battleResultType) {
+    this.status = user;
+    this.battleResult = battleResult;
   }
 }
 

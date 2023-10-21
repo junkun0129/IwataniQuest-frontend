@@ -80,7 +80,7 @@ function useEnemyData() {
     setIsEnemiesSet(false);
   }, [sequence === "end-player-lose" || sequence === "end-player-win"]);
 
-  return { enemyComponents, isEnemiesSet };
+  return { enemyComponents, isEnemiesSet, setIsEnemiesSet };
 }
 
 export default useEnemyData;

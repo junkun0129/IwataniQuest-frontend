@@ -13,8 +13,8 @@ import {
   getAttackFromEnemy,
   restoreHP,
 } from "../store/features/userStatuSlice";
-import { changeCollisionNum } from "../store/features/battleStateSlice";
 import { motion } from "framer-motion";
+import { changeBattleResult } from "../store/features/StatesSlice";
 function BattleDebag() {
   const dispatch = useAppDispatch();
   const enemy1Selector = useAppSelector((state) => state.enemy1Reducer);
@@ -22,6 +22,9 @@ function BattleDebag() {
   const enemy3Selector = useAppSelector((state) => state.enemy3Reducer);
   const enemySelectors = [enemy1Selector, enemy2Selector, enemy3Selector];
 
+  const battlesequence = useAppSelector(
+    (state) => state.StatesReducer.battleSequence
+  );
   const atackEnemies = [atackEnemy1, atackEnemy2, atackEnemy3];
   const zeroEnemies = [maketozero1, maketozero2, maketozero3];
   const playerStatus = useAppSelector(
@@ -33,6 +36,7 @@ function BattleDebag() {
 
   const hpHeal = () => {
     dispatch(restoreHP({ hp: playerStatus.maxmumHp }));
+    dispatch(changeBattleResult("off"));
   };
 
   const attackYou = () => {
@@ -62,7 +66,7 @@ function BattleDebag() {
         <button onClick={hpHeal}>hp heal</button>
         <button onClick={attackYou}>hp reduce</button>
         <button onClick={attackenemy}>attack enemy</button>
-        <h3>collisionNum :{collisionNum} </h3>
+        <h3>battlesequence :{battlesequence} </h3>
         <h3>your HP:{playerStatus.hp}</h3>
         <div style={{ display: "flex" }}>
           {enemySelectors.map((enemy, i) => {
