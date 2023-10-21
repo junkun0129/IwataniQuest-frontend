@@ -148,7 +148,9 @@ export class GamePanel {
   public textAppearPersonEmail: string = "";
   public textAppearPersonText: string | undefined = "";
   customEventListeners: {};
-
+  eventListeners: Map<any, any>;
+  public booleannnn = false;
+  public numberrrr = 0;
   constructor(
     c: CanvasRenderingContext2D,
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
@@ -166,6 +168,7 @@ export class GamePanel {
     this.socket = socket;
     this.c = c;
     this.customEventListeners = {};
+    this.eventListeners = new Map();
   }
 
   public setup(): void {
@@ -221,8 +224,9 @@ export class GamePanel {
         this.mapState === this.outField
       ) {
         this.socket.emit("encount", "hit");
-        this.emitCustomEvent("hit", "hit");
+        this.emitFromGamePanel("hit", "hit");
         this.gameState = this.battleScene;
+        this.booleannnn = true;
       }
     }
 
@@ -329,19 +333,29 @@ export class GamePanel {
     }
     return false;
   }
-  on(event: string, listener: Function) {
+  onFromGamePanel(event: string, listener: Function) {
     if (!this.customEventListeners[event]) {
       this.customEventListeners[event] = [];
     }
     this.customEventListeners[event].push(listener);
   }
-  // カスタムイベントを発行するメソッド
-  public emitCustomEvent(event: string, data: any) {
+  public emitFromGamePanel(event: string, data: any) {
     if (this.customEventListeners[event]) {
       for (const listener of this.customEventListeners[event]) {
         listener(data);
       }
     }
+  }
+
+  emitFromRedux(data: number) {
+    // if (this.eventListeners.has(event)) {
+    //   for (const listener of this.eventListeners.get(event)) {
+    //     listener(data);
+    //   }
+    // }
+    this.numberrrr = data;
+
+    console.log(this.numberrrr, "lksdlskdslkdsldksklskdl");
   }
 }
 

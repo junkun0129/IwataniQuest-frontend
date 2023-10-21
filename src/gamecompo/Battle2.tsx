@@ -19,63 +19,61 @@ import useHPBarAnimation from "../customhooks/useHPBarAnimation";
 import useSequence from "../customhooks/useSequence";
 import { sequenceType } from "../types/type";
 import { socketType } from "./Field";
+import { changeBattleSequence } from "../store/features/StatesSlice";
 const enemyArr = [<Genkiman />, <Hentaiyou />, <Hukurou />];
 
 function Battle2({ socket }: socketType) {
   const enemyRefs = [useRef(null), useRef(null), useRef(null)];
-  const [sequence, setSequence] = useState<sequenceType>("field");
 
-  const { enemyComponents, isBattleStart } = useEnemyData({ socket }, sequence);
+  const sequence = useAppSelector(
+    (state) => state.StatesReducer.battleSequence
+  );
+  const { isEnemiesSet } = useEnemyData();
+
   const enemy1Selector = useAppSelector((state) => state.enemy1Reducer);
   const enemy2Selector = useAppSelector((state) => state.enemy2Reducer);
   const enemy3Selector = useAppSelector((state) => state.enemy3Reducer);
-  const collisionNumSlice = useAppSelector(
-    (state) => state.collisionNumReducer
-  );
+  const enemySelectors = [enemy1Selector, enemy2Selector, enemy3Selector];
+
   const playerStatus = useAppSelector(
     (state) => state.userStatusReducer.status
   );
-  let [closestEnemy, setClosestEnemy] = useState(null);
-  const enemySelectors = [enemy1Selector, enemy2Selector, enemy3Selector];
 
   const hpGage1 = useAnimationControls();
   const hpGage2 = useAnimationControls();
   const hpGage3 = useAnimationControls();
   const hpGages = [hpGage1, hpGage2, hpGage3];
+
   enemySelectors.forEach((enemy, i) => {
     useHPBarAnimation(hpGages[i], enemy.hp, enemy.MaxHp);
   });
   const dispatch = useAppDispatch();
+
   const enemyControl1 = useAnimationControls();
   const enemyControl2 = useAnimationControls();
   const enemyControl3 = useAnimationControls();
   const enemyControls = [enemyControl1, enemyControl2, enemyControl3];
   const hpBarControl = useAnimationControls();
-  const { dialog, battleResult } = useSequence(
-    sequence,
-    enemyControls,
-    hpBarControl
-  );
+  const { dialog, battleResult } = useSequence(enemyControls, hpBarControl);
 
   useEffect(() => {
-    console.log(battleResult, "battleresult");
     if (battleResult === "win") {
       //go back socket
-      setSequence("field");
+      dispatch(changeBattleSequence("field"));
     } else if (battleResult === "lose") {
       //reset socket
-      setSequence("field");
+      dispatch(changeBattleSequence("field"));
     }
   }, [battleResult]);
 
   useEffect(() => {
-    setSequence("start");
-  }, [isBattleStart === true]);
+    dispatch(changeBattleSequence("start"));
+  }, [isEnemiesSet === true]);
+
   const handleDragEnd = (event) => {
     const collisionNum = collisionCheck(event, enemyRefs);
-    console.log(collisionNum, "nnnnnnnnnnnnnnn");
     if (collisionNum !== null) {
-      setSequence("player-action");
+      dispatch(changeBattleSequence("player-action"));
       dispatch(changeCollisionNum({ collisionNum: collisionNum }));
     }
   };
@@ -83,21 +81,21 @@ function Battle2({ socket }: socketType) {
   const handleClick = () => {
     const condition = (e: enemyStatusType) => e.hp <= 0;
     if (enemySelectors.every(condition)) {
-      setSequence("end-player-win");
+      dispatch(changeBattleSequence("end-player-win"));
     }
     if (sequence === "start") {
-      setSequence("player-turn");
+      dispatch(changeBattleSequence("player-turn"));
     }
     if (sequence === "player-action") {
-      setSequence("enemy-action");
+      dispatch(changeBattleSequence("enemy-action"));
     }
 
     if (sequence === "enemy-action") {
       if (playerStatus.hp <= 0) {
         //battle end you lose
-        setSequence("end-player-lose");
+        dispatch(changeBattleSequence("end-player-lose"));
       } else {
-        setSequence("player-turn");
+        dispatch(changeBattleSequence("player-turn"));
       }
     }
     if (sequence === "end-player-win") {

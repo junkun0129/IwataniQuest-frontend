@@ -1,35 +1,32 @@
 import * as React from "react";
 import { Component, useEffect, useRef } from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { GamePanel } from "../fieldcompo/GamePanel";
 import { motion } from "framer-motion";
 import styles from "./Field.module.scss";
-import { useNonInitialEffect } from "../customhooks/useNonInitialEffect";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import reuseValue from "../reuseValue";
 import { afterSave, createUser } from "../store/features/userStatuSlice";
 import { ClientToServerEvents, ServerToClientEvents } from "../types/type";
 import {
-  changeState,
-  encountStateSlice,
-} from "../store/features/battleStateSlice";
-
+  StatesReducer,
+  changeEncountState,
+} from "../store/features/StatesSlice";
+import { store } from "../store/store";
 export type socketType = {
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 };
 function Field({ socket }: socketType) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [game, setGame] = useState<GamePanel | null>(null);
-  const [isEncount, setIsEncount] = useState<boolean>(false);
   const user = useAppSelector((state) => state.userStatusReducer);
-
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isAppearInput, setIsAppearInput] = useState<boolean>(false);
   const [chat, setChat] = useState<string>("");
   const dispatch = useAppDispatch();
 
+  //create GamePanel instance
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -42,11 +39,22 @@ function Field({ socket }: socketType) {
   useEffect(() => {
     game?.setup();
   }, [game]);
+
+  //data to GamePanel
+  store.subscribe(() => {
+    if (game) {
+      game.emitFromRedux(user.status.hp);
+    }
+  });
+
+  //data from GamePanel
   useEffect(() => {
-    game?.on("hit", (data) => {
+    game?.onFromGamePanel("hit", (data) => {
       console.log(data);
-      dispatch(changeState({ isEncount: true }));
+      dispatch(changeEncountState(true));
     });
+
+    console.log(game?.booleannnn, "lklkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
   }, [game]);
 
   useEffect(() => {
@@ -79,10 +87,7 @@ function Field({ socket }: socketType) {
     });
   }, [socket]);
 
-  useEffect(() => {}, []);
-
   useEffect(() => {
-    console.log(isAppearInput, "iiii");
     if (!isAppearInput) {
       window.addEventListener("keydown", (e) => {
         if (e.key === "t") {

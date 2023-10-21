@@ -9,6 +9,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import { enemy1Reducer } from "./features/enemySlice";
 import { enemy2Reducer } from "./features/enemySlice";
 import { enemy3Reducer } from "./features/enemySlice";
+import { StatesReducer } from "./features/StatesSlice";
 import userStatusReducer from "./features/userStatuSlice";
 import {
   encountStateReducer,
@@ -28,6 +29,7 @@ const reducer = combineReducers({
   userStatusReducer,
   encountStateReducer,
   collisionNumReducer,
+  StatesReducer,
 });
 
 const persistedReducer = persistReducer(persisConfig, reducer);

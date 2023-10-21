@@ -9,15 +9,16 @@ import {
 import { getAttackFromEnemy } from "../store/features/userStatuSlice";
 import { changeCollisionNum } from "../store/features/battleStateSlice";
 import { battleRedultType, sequenceType } from "../types/type";
+import { changeEncountState } from "../store/features/StatesSlice";
 
 const useSequence = (
-  sequence: sequenceType,
   enemyControls: AnimationControls[],
   hpBarControl: AnimationControls
 ) => {
   const [dialog, setDialog] = useState("");
   const [battleResult, setBattleResult] = useState<battleRedultType>(null);
   const dispatch = useAppDispatch();
+
   const collisionNum = useAppSelector(
     (state) => state.collisionNumReducer.collisionNum
   );
@@ -31,10 +32,14 @@ const useSequence = (
   const enemySelectors = [enemy1Selector, enemy2Selector, enemy3Selector];
   const enemyAttacks = [atackEnemy1, atackEnemy2, atackEnemy3];
 
+  const battleSequence = useAppSelector(
+    (state) => state.StatesReducer.battleSequence
+  );
+
   useEffect(() => {
     const animateHpBar = async () => {
-      if (sequence) {
-        switch (sequence) {
+      if (battleSequence) {
+        switch (battleSequence) {
           case "start": {
             console.log("iiiiiiii");
             setDialog("you ran into enemies!!!");
@@ -95,7 +100,7 @@ const useSequence = (
           case "end-player-lose": {
             setDialog("you fainted.......");
             setBattleResult("lose");
-            
+
             break;
           }
           default:
@@ -105,7 +110,7 @@ const useSequence = (
     };
 
     animateHpBar(); // Call the async function
-  }, [sequence, collisionNum]);
+  }, [battleSequence, collisionNum]);
 
   return { dialog, battleResult };
 };

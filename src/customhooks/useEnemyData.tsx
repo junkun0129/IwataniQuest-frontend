@@ -15,21 +15,16 @@ import Hukurou from "../enemycompo/Hukurou";
 import { sequenceType } from "../types/type";
 import { wait } from "../utils/wait";
 import { enemiesData } from "../assets/enemiesData";
-import {
-  changeState,
-  encountStateReducer,
-} from "../store/features/battleStateSlice";
+import { changeEncountState } from "../store/features/StatesSlice";
 const enemyArr = [<Genkiman />, <Hentaiyou />, <Hukurou />];
-type Props = {
-  socket: socketType;
-  sequence: sequenceType;
-};
-function useEnemyData({ socket }: socketType, sequence: sequenceType) {
+
+function useEnemyData() {
   const [enemyComponents, setEnemyComponents] = useState([]);
   const [error, setError] = useState(null);
-  const [isBattleStart, setIsBattleStart] = useState(false);
-  const encountStateSelector = useAppSelector(
-    (state) => state.encountStateReducer
+  const [isEnemiesSet, setIsEnemiesSet] = useState(false);
+  const isEncount = useAppSelector((state) => state.StatesReducer.encountState);
+  const sequence = useAppSelector(
+    (state) => state.StatesReducer.battleSequence
   );
   const dispatch = useAppDispatch();
   const enemyDispatches = [
@@ -47,10 +42,9 @@ function useEnemyData({ socket }: socketType, sequence: sequenceType) {
     emptyCompo();
   }, [sequence]);
   useEffect(() => {
-    if (encountStateSelector) {
+    if (isEncount) {
       //reset encounter
-      dispatch(changeState({ isEncount: false }));
-
+      dispatch(changeEncountState(false));
       //fetch enemies's data
       fetch(`${reuseValue.serverURL}/enemy/create`, {
         method: "GET",
@@ -76,17 +70,17 @@ function useEnemyData({ socket }: socketType, sequence: sequenceType) {
             );
             setEnemyComponents((pre) => [...pre, enemyCompo]);
           });
-          setIsBattleStart(true);
+          setIsEnemiesSet(true);
         }
       });
     }
-  }, [encountStateSelector]);
+  }, [isEncount]);
 
   useEffect(() => {
-    setIsBattleStart(false);
+    setIsEnemiesSet(false);
   }, [sequence === "end-player-lose" || sequence === "end-player-win"]);
 
-  return { enemyComponents, isBattleStart };
+  return { enemyComponents, isEnemiesSet };
 }
 
 export default useEnemyData;
