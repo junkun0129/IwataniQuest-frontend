@@ -60,16 +60,6 @@ export class UI {
   }
 
   drawPlayerDialog(c: CanvasRenderingContext2D) {
-    // this.gp.otherPlayers.forEach((element) => {
-    //   if (element.isDialogAppear) {
-    //     let x = element.npcX - this.gp.player.playerX + 750;
-    //     let y = element.npcY - this.gp.player.playerY + 350;
-
-    //     c.fillStyle = "black";
-    //     c.fillRect(x, y - 100, 100, 100);
-    //   }
-    // });
-
     if (this.gp.isTextApper) {
       const person = this.gp.otherPlayers.filter(
         (each) => each.email === this.gp.textAppearPersonEmail
@@ -119,7 +109,6 @@ export class UI {
     const menuX: number = 1150;
     const menuY: number = 50;
 
-    const iwatani = localStorage.getItem("a");
     if (this.gp.gameState !== this.gp.itemViewSecne) {
       c.fillStyle = "black";
       c.fillRect(menuX, menuY, 350, 600);

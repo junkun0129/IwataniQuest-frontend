@@ -333,7 +333,7 @@ export class GamePanel {
 
   public Encounter(): boolean {
     if (this.encounterCoolDown <= 0) {
-      const ramdomNum: number = Math.floor(Math.random() * 100);
+      const ramdomNum: number = Math.floor(Math.random() * 100000000);
 
       if (ramdomNum === 50) {
         this.encounterCoolDown = 5000;
