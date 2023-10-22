@@ -1,16 +1,10 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
 //import './App.css'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import styles from "./App.module.scss";
 import socketIO, { io, Socket, SocketOptions } from "socket.io-client";
-import Hello from "./component/Hello";
 import Game from "./mainroutes/Game";
 import Signup from "./mainroutes/Signup";
 import Login from "./mainroutes/Login";
 import Home from "./mainroutes/Home";
-import env from "ts-react-dotenv";
-import { useNonInitialEffect } from "./customhooks/useNonInitialEffect";
 import EnemiesManage from "./admincompo/EnemiesManage";
 import reuseValue from "./reuseValue";
 import ResponsiveAppBar from "./component/ResponsiveAppBar";
@@ -25,7 +19,7 @@ const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
 function App() {
   return (
     <>
-      <ResponsiveAppBar></ResponsiveAppBar>
+      {/* <ResponsiveAppBar></ResponsiveAppBar> */}
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home></Home>}></Route>

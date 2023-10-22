@@ -19,6 +19,7 @@ import {
   ClientToServerEvents,
   ServerToClientEvents,
   battleResultType,
+  gameModeType,
   onFromGamePanelType,
 } from "../types/type.js";
 import { userSliceType } from "../store/features/userStatuSlice.js";
@@ -302,8 +303,15 @@ export class GamePanel {
     }
   }
 
-  emitFromRedux(user: userSliceType, battleResult: battleResultType) {
+  emitFromRedux(
+    user: userSliceType,
+    battleResult: battleResultType,
+    gamemode: gameModeType
+  ) {
     this.status = user;
     this.battleResult = battleResult;
+    if (gamemode === "walk") {
+      this.gameState = this.fieldScene;
+    }
   }
 }

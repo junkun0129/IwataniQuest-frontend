@@ -3,7 +3,7 @@ import { Component, useEffect, useRef } from "react";
 import { useState } from "react";
 import { Socket } from "socket.io-client";
 import { GamePanel } from "../fieldcompo/GamePanel";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import styles from "./Field.module.scss";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import reuseValue from "../reuseValue";
@@ -15,6 +15,8 @@ import {
 } from "../store/features/StatesSlice";
 import { store } from "../store/store";
 import { useGamePanelListener } from "../customhooks/useGamePanelListener";
+import DialogNPC from "../customhooks/useDialog";
+import useDialog from "../customhooks/useDialog";
 export type socketType = {
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 };
@@ -29,6 +31,9 @@ function Field({ socket }: socketType) {
   const battleResult = useAppSelector(
     (state) => state.StatesReducer.battleResult
   );
+  const gameMode = useAppSelector((state) => state.StatesReducer.gameMode);
+  const eventDialogs = useAppSelector((state) => state.EventsReducer.dialog);
+  const { displayedText } = useDialog();
   //create GamePanel instance
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -46,7 +51,7 @@ function Field({ socket }: socketType) {
   //data to GamePanel
   store.subscribe(() => {
     if (game) {
-      game.emitFromRedux(user, battleResult);
+      game.emitFromRedux(user, battleResult, gameMode);
     }
   });
 
@@ -110,6 +115,15 @@ function Field({ socket }: socketType) {
 
   return (
     <>
+      <AnimatePresence>
+        {gameMode === "event" && (
+          <>
+            <motion.h1 initial={{ y: 50 }} animate={{ y: 50 }} exit={{ y: 50 }}>
+              {displayedText}
+            </motion.h1>
+          </>
+        )}
+      </AnimatePresence>
       <motion.canvas
         className={styles.field}
         ref={canvasRef}
