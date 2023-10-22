@@ -10,6 +10,7 @@ import { enemy1Reducer } from "./features/enemySlice";
 import { enemy2Reducer } from "./features/enemySlice";
 import { enemy3Reducer } from "./features/enemySlice";
 import { StatesReducer } from "./features/StatesSlice";
+import { EventsReducer } from "./features/eventsSlice";
 import userStatusReducer from "./features/userStatuSlice";
 import {
   encountStateReducer,
@@ -30,6 +31,7 @@ const reducer = combineReducers({
   encountStateReducer,
   collisionNumReducer,
   StatesReducer,
+  EventsReducer,
 });
 
 const persistedReducer = persistReducer(persisConfig, reducer);

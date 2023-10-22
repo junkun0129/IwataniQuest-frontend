@@ -21,6 +21,7 @@ export class CollisionChecker {
     let Nullindex: number = 999;
     if (this.gp.npc.length > 0) {
       for (let i: number = 0; this.gp.npc.length > i; i++) {
+        this.gp.npc[i].collision = false;
         if (this.gp.mapState === this.gp.npc[i].field) {
           this.collisionChecking(
             {
@@ -31,9 +32,8 @@ export class CollisionChecker {
             },
             (collision) => {
               this.gp.collision = true;
-              this.gp.collisionNPC = true;
+              this.gp.npc[collision].collision = true;
               callback(collision);
-              this.gp.emitFromGamePanel("runIntoNPC", this.gp.npc[collision]);
             }
           );
         }

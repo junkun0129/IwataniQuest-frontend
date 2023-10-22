@@ -97,5 +97,5 @@ export interface ClientToServerEvents {
   }) => void;
 }
 export type battleResultType = "off" | "win" | "lose" | "escape";
-
+export type gameModeType = "walk" | "battle" | "menu" | "event";
 export type onFromGamePanelType = "encountEnemies" | "runIntoNPC" | "openMenu";

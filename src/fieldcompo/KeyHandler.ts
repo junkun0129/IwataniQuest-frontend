@@ -37,12 +37,18 @@ export class Keyhandler {
       }
 
       //talk
-      if (this.gp.gameState === this.gp.talkingScene) {
+      if (this.gp.gameState === this.gp.fieldScene) {
         if (e.key === "e") {
-          console.log("kim yunson");
-          this.gp.sound[2].playMusic();
-          this.gp.npc[this.gp.whoSpeakIndex].dialogIndex++;
-          this.gp.npc[this.gp.whoSpeakIndex].speak();
+          const collisionNPCIndex = this.gp.npc.findIndex(
+            (person) => person.collision === true
+          );
+          if (collisionNPCIndex !== -1) {
+            this.gp.gameState = this.gp.talkingScene;
+            this.gp.emitFromGamePanel(
+              "runIntoNPC",
+              this.gp.npc[collisionNPCIndex]
+            );
+          }
         }
       }
 

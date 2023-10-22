@@ -73,10 +73,8 @@ export class Player {
       //intract with NPC
       let bumpedNPCNum = 999;
       this.gp.collisionC.collisonCheckerNPC(this.direction, (collisionNum) => {
-        console.log(collisionNum, ";lkj;lkj;lkj;lkj;lk");
         bumpedNPCNum = collisionNum;
       });
-      this.intaractNPC(bumpedNPCNum);
 
       //intract with object
       let deleteIndex = this.gp.collisionC.CheckCollisionObject(this.direction);
@@ -147,15 +145,6 @@ export class Player {
         x: this.playerX,
         y: this.playerY,
       });
-    }
-  }
-
-  public intaractNPC(i: number) {
-    if (i !== 999) {
-      console.log(i, "hhhhhhhhhhhhhhhhhhhhhh");
-      this.gp.whoSpeakIndex = i;
-      this.gp.gameState = this.gp.talkingScene;
-      this.gp.npc[i].speak();
     }
   }
 

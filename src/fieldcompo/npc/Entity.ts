@@ -20,8 +20,10 @@ export class Entity {
   spriteNum: number = 1;
   dialogs: string[] = ["a", "i", "u", "e", "o"];
   dialogIndex: number = 0;
+  collision: boolean = false;
 
   field: number = 0;
+  name: string = "null";
 
   constructor(gp: GamePanel) {
     this.gp = gp;

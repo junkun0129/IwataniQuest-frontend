@@ -247,12 +247,14 @@ export class Asset {
     this.gp.npc[0].picture = "/img/npc.png";
     this.gp.npc[0].dialogs = TotoDialog1;
     this.gp.npc[0].field = this.gp.field1;
+    this.gp.npc[0].name = "nick";
     this.gp.npc[1] = new Npc(this.gp);
     this.gp.npc[1].npcX = 3100;
     this.gp.npc[1].npcY = 2000;
     this.gp.npc[1].picture = "/img/npc.png";
     this.gp.npc[1].dialogs = TotoDialog1;
     this.gp.npc[1].field = this.gp.field1;
+    this.gp.npc[1].name = "jack";
   }
 
   setSounds(): void {
