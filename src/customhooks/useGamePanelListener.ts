@@ -9,5 +9,9 @@ export function useGamePanelListener(game: GamePanel) {
     game?.onFromGamePanel("encountEnemies", (data) => {
       dispatch(changeEncountState(true));
     });
+    game?.onFromGamePanel("runIntoNPC", (data) => {});
+    game?.onFromGamePanel("openMenu", (data) => {
+      console.log("open");
+    });
   }, [game]);
 }

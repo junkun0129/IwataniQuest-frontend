@@ -51,12 +51,6 @@ function Field({ socket }: socketType) {
   });
 
   //data from GamePanel
-  // useEffect(() => {
-  //   game?.onFromGamePanel("encountEnemies", (data) => {
-  //     console.log(data);
-  //     dispatch(changeEncountState(true));
-  //   });
-  // }, [game]);
   useGamePanelListener(game);
 
   useEffect(() => {

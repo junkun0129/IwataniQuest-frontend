@@ -1,15 +1,13 @@
 import * as React from "react";
 import { Component } from "react";
 import { useState, useEffect } from "react";
-import Battle from "../gamecompo/Battle";
 import Field, { socketType } from "../gamecompo/Field";
 import { motion, useAnimationControls } from "framer-motion";
 import styles from "./Game.module.scss";
 import { useAppSelector } from "../store/store";
-import Battle2 from "../gamecompo/Battle2";
+import Battle from "../gamecompo/Battle";
 import BattleDebag from "../gamecompo/BattleDebag";
 import useScreenSwitch from "../customhooks/useScreenSwitch";
-import Field2 from "../gamecompo/Field2";
 
 function Game({ socket }: socketType) {
   const { fieldControl, battleControl } = useScreenSwitch({ socket });
@@ -22,7 +20,6 @@ function Game({ socket }: socketType) {
           style={{ position: "absolute", width: "100vw", height: "100vh" }}
         >
           <Field socket={socket}></Field>
-          {/* <Field2></Field2> */}
         </motion.div>
 
         <motion.div
@@ -30,8 +27,7 @@ function Game({ socket }: socketType) {
           initial={{ x: -1600 }}
           style={{ position: "absolute", width: "100vw", height: "100vh" }}
         >
-          {/* <Battle socket={socket}></Battle> */}
-          <Battle2 socket={socket}></Battle2>
+          <Battle socket={socket}></Battle>
           <BattleDebag></BattleDebag>
         </motion.div>
       </div>

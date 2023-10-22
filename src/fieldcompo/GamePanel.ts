@@ -251,20 +251,7 @@ export class GamePanel {
 
   public draw(): void {
     // this.count++;
-
     this.tileM.draw(this.c);
-    this.player.draw(this.c);
-    // console.log(this.otherPlayers);
-    this.otherPlayers.forEach((otherPlayer, i) => {
-      const yourIndex = this.otherPlayers.findIndex(
-        (each) => each.email === this.status.email
-      );
-
-      if (i !== yourIndex) {
-        this.otherPlayers[i].draw(this.c);
-      } else {
-      }
-    });
 
     //collision tile
     this.collisionM.draw(this.c);
@@ -276,21 +263,22 @@ export class GamePanel {
       }
     }
 
-    //book
-    for (let i: number = 0; i < this.doors.length; i++) {
-      if (this.books[i] !== undefined) {
-        this.books[i].draw(this.c);
-      }
-    }
+    // //book
+    // for (let i: number = 0; i < this.doors.length; i++) {
+    //   if (this.books[i] !== undefined) {
+    //     this.books[i].draw(this.c);
+    //   }
+    // }
 
     this.asset.draw(this.c);
+    this.player.draw(this.c);
 
     this.ui.draw(this.c);
   }
 
   public Encounter(): boolean {
     if (this.encounterCoolDown <= 0) {
-      const ramdomNum: number = Math.floor(Math.random() * 1000000000);
+      const ramdomNum: number = Math.floor(Math.random() * 100);
 
       if (ramdomNum === 50) {
         this.encounterCoolDown = 5000;

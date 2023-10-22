@@ -92,7 +92,12 @@ export class Player {
       this.previousRoom = this.gp.mapState;
 
       //intract with doors
-      this.gp.collisionC.CheckCollisionDoors(this.direction);
+      this.gp.collisionC.CheckCollisionDoors(this.direction, (index) => {
+        this.gp.mapState =
+          this.gp.doors[this.gp.doors[index].doorTo].locatation;
+        this.gp.mapsChange = true;
+        this.gp.lastDoorNum = index;
+      });
       this.playerPosition();
 
       //player walking

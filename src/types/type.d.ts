@@ -98,4 +98,4 @@ export interface ClientToServerEvents {
 }
 export type battleResultType = "off" | "win" | "lose" | "escape";
 
-export type onFromGamePanelType = "encountEnemies" | "runIntoNPC";
+export type onFromGamePanelType = "encountEnemies" | "runIntoNPC" | "openMenu";

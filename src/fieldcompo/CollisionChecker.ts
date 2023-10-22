@@ -33,6 +33,7 @@ export class CollisionChecker {
               this.gp.collision = true;
               this.gp.collisionNPC = true;
               callback(collision);
+              this.gp.emitFromGamePanel("runIntoNPC", this.gp.npc[collision]);
             }
           );
         }
@@ -40,6 +41,7 @@ export class CollisionChecker {
     }
     return Nullindex;
   }
+
   checkCollisionTile(direction: "up" | "down" | "left" | "right"): void {
     this.gp.collision = false;
     this.gp.collisionM.collisionArray.forEach((tile) => {
@@ -57,6 +59,30 @@ export class CollisionChecker {
       );
     });
   }
+
+  checkCollisionDoors(direction: "up" | "down" | "left" | "right"): void {
+    for (let i: number = 0; i < this.gp.doors.length; i++) {
+      if (this.gp.doors[i].locatation === this.gp.mapState) {
+        if (this.gp.doors[i] !== undefined) {
+          this.collisionChecking(
+            {
+              direction,
+              passive: { x: this.gp.doors[i].x, y: this.gp.doors[i].y },
+              active: { x: this.gp.player.playerX, y: this.gp.player.playerX },
+            },
+            (collision) => {
+              console.log(";sldkfja;slfkjasldfkajs;dflkasj;flaksjf;d");
+              this.gp.mapState =
+                this.gp.doors[this.gp.doors[i].doorTo].locatation;
+              this.gp.mapsChange = true;
+              this.gp.lastDoorNum = i;
+            }
+          );
+        }
+      }
+    }
+  }
+
   collisionChecking = (
     { direction, passive, active, index }: collisionCheckingType,
     collision: Function
@@ -80,7 +106,7 @@ export class CollisionChecker {
         if (
           active.x + this.gp.tilesize >= passiveX + passive.x &&
           active.x <= passiveX + this.gp.tilesize + passive.x &&
-          active.y + this.gp.tilesize + 50 >= passiveY + passive.y &&
+          active.y + this.gp.tilesize + 80 >= passiveY + passive.y &&
           active.y <= passiveY + this.gp.tilesize + passive.y - 20
         ) {
           collision(index);
@@ -112,7 +138,7 @@ export class CollisionChecker {
     }
   };
 
-  checkCollisionNPC(direction: string): void {
+  checkCollisionNPCtoTile(direction: string): void {
     this.gp.collision = false;
 
     if (this.gp.npc.length > 0) {
@@ -187,98 +213,7 @@ export class CollisionChecker {
     }
   }
 
-  CheckCollisionEntityToPlayer(direction: string): number {
-    let index: number = 999;
-    if (this.gp.npc.length > 0) {
-      for (let i: number = 0; this.gp.npc.length > i; i++) {
-        if (this.gp.mapState === this.gp.npc[i].field) {
-          let npcX: number = this.gp.npc[i].npcX - this.gp.player.playerX + 750;
-          let npcY: number = this.gp.npc[i].npcY - this.gp.player.playerY + 350;
-
-          switch (direction) {
-            case "down": {
-              if (
-                this.gp.player.playerX + this.gp.tilesize - 20 >=
-                  npcX + this.gp.npc[i].npcX - 800 &&
-                this.gp.player.playerX + 20 <=
-                  npcX + this.gp.tilesize + this.gp.npc[i].npcX - 700 &&
-                this.gp.player.playerY + this.gp.tilesize - 50 >=
-                  npcY + this.gp.npc[i].npcY - 400 &&
-                this.gp.player.playerY <=
-                  npcY + this.gp.tilesize + this.gp.npc[i].npcY - 300 + 40
-              ) {
-                // console.log("collisionNPC down!!!");
-                this.gp.collision = true;
-                this.gp.collisionNPC = true;
-                return i;
-              }
-              break;
-            }
-
-            case "right": {
-              if (
-                this.gp.player.playerX + this.gp.tilesize - 50 >=
-                  npcX + this.gp.npc[i].npcX - 800 &&
-                this.gp.player.playerX <=
-                  npcX + this.gp.tilesize + this.gp.npc[i].npcX - 700 &&
-                this.gp.player.playerY + this.gp.tilesize - 20 >=
-                  npcY + this.gp.npc[i].npcY - 400 &&
-                this.gp.player.playerY + 20 <=
-                  npcY + this.gp.tilesize + this.gp.npc[i].npcY - 300
-              ) {
-                // console.log("collisionNPC right!!!");
-                this.gp.collision = true;
-                this.gp.collisionNPC = true;
-                return i;
-              }
-              break;
-            }
-            case "left": {
-              if (
-                this.gp.player.playerX + this.gp.tilesize >=
-                  npcX + this.gp.npc[i].npcX - 800 &&
-                this.gp.player.playerX + 50 <=
-                  npcX + this.gp.tilesize + this.gp.npc[i].npcX - 700 &&
-                this.gp.player.playerY + this.gp.tilesize - 20 >=
-                  npcY + this.gp.npc[i].npcY - 400 &&
-                this.gp.player.playerY + 20 <=
-                  npcY + this.gp.tilesize + this.gp.npc[i].npcY - 300
-              ) {
-                // console.log("collisionNPC left!!!");
-                this.gp.collision = true;
-                this.gp.collisionNPC = true;
-                return i;
-              }
-              break;
-            }
-
-            case "up": {
-              if (
-                this.gp.player.playerX + this.gp.tilesize - 20 >=
-                  npcX + this.gp.npc[i].npcX - 800 &&
-                this.gp.player.playerX + 20 <=
-                  npcX + this.gp.tilesize + this.gp.npc[i].npcX - 700 &&
-                this.gp.player.playerY + this.gp.tilesize >=
-                  npcY + this.gp.npc[i].npcY - 400 &&
-                this.gp.player.playerY + 40 <=
-                  npcY + this.gp.tilesize + this.gp.npc[i].npcY - 300
-              ) {
-                // console.log("collisionNPC up!!!");
-                this.gp.collision = true;
-                this.gp.collisionNPC = true;
-                return i;
-              }
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    return index;
-  }
-
-  CheckCollisionDoors(direction: string): void {
+  CheckCollisionDoors(direction: string, hit: Function): void {
     for (let i: number = 0; i < this.gp.doors.length; i++) {
       if (this.gp.doors[i].locatation === this.gp.mapState) {
         if (this.gp.doors[i] !== undefined) {
@@ -307,11 +242,7 @@ export class CollisionChecker {
                     300 -
                     20
               ) {
-                console.log("inn");
-                this.gp.mapState =
-                  this.gp.doors[this.gp.doors[i].doorTo].locatation;
-                this.gp.mapsChange = true;
-                this.gp.lastDoorNum = i;
+                hit(i);
               }
               break;
             }
@@ -337,11 +268,7 @@ export class CollisionChecker {
                     300 -
                     20
               ) {
-                console.log("inn");
-                this.gp.mapState =
-                  this.gp.doors[this.gp.doors[i].doorTo].locatation;
-                this.gp.mapsChange = true;
-                this.gp.lastDoorNum = i;
+                hit(i);
               }
               break;
             }
@@ -365,11 +292,7 @@ export class CollisionChecker {
                     300 -
                     20
               ) {
-                console.log("inn");
-                this.gp.mapState =
-                  this.gp.doors[this.gp.doors[i].doorTo].locatation;
-                this.gp.mapsChange = true;
-                this.gp.lastDoorNum = i;
+                hit(i);
               }
               break;
             }
@@ -394,11 +317,7 @@ export class CollisionChecker {
                     this.gp.doors[i].y -
                     300
               ) {
-                console.log("inn");
-                this.gp.mapState =
-                  this.gp.doors[this.gp.doors[i].doorTo].locatation;
-                this.gp.mapsChange = true;
-                this.gp.lastDoorNum = i;
+                hit(i);
               }
               break;
             }
