@@ -23,16 +23,14 @@ export type socketType = {
 function Field({ socket }: socketType) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [game, setGame] = useState<GamePanel | null>(null);
-  const user = useAppSelector((state) => state.userStatusReducer);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isAppearInput, setIsAppearInput] = useState<boolean>(false);
   const [chat, setChat] = useState<string>("");
   const dispatch = useAppDispatch();
-  const battleResult = useAppSelector(
-    (state) => state.StatesReducer.battleResult
-  );
-  const gameMode = useAppSelector((state) => state.StatesReducer.gameMode);
   const eventDialogs = useAppSelector((state) => state.EventsReducer.dialog);
+  const user = useAppSelector((state) => state.userStatusReducer);
+  const gameMode = useAppSelector((state) => state.StatesReducer.gameMode);
+
   const { displayedText } = useDialog();
   //create GamePanel instance
   useEffect(() => {
@@ -50,6 +48,9 @@ function Field({ socket }: socketType) {
 
   //data to GamePanel
   store.subscribe(() => {
+    const { battleResult, gameMode } = store.getState().StatesReducer;
+    const user = store.getState().userStatusReducer;
+
     if (game) {
       game.emitFromRedux(user, battleResult, gameMode);
     }

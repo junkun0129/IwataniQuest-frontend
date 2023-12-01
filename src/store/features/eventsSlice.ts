@@ -15,8 +15,8 @@ export const eventsSlice = createSlice({
     talkEventStarts: (state, action: PayloadAction<string[]>) => {
       (state.isEvent = true), (state.dialog = action.payload);
     },
-    talkEventEnds: (state, action: PayloadAction) => {
-      (state.isEvent = true), (state.dialog = [""]);
+    talkEventEnds: (state) => {
+      (state.isEvent = false), (state.dialog = []);
     },
   },
 });

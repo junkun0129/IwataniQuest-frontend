@@ -1,3 +1,4 @@
+import { wait } from "../utils/wait.js";
 import { GamePanel } from "./GamePanel.js";
 export class Keyhandler {
   gp: GamePanel;
@@ -14,8 +15,11 @@ export class Keyhandler {
   }
 
   public keyDown(): void {
-    window.addEventListener("keydown", (e) => {
-      if (this.gp.gameState === this.gp.fieldScene) {
+    window.addEventListener("keydown", async (e) => {
+      if (e.key === "g") {
+        console.log(this.gp.gameMode, "gamemode");
+      }
+      if (this.gp.gameMode === "walk") {
         if (e.key === "w") {
           this.upPressed = true;
         }
@@ -28,22 +32,15 @@ export class Keyhandler {
         if (e.key === "d") {
           this.rightPressed = true;
         }
-
-        //menu open
-        if (e.key === "q") {
-          this.gp.gameState = this.gp.menuScene;
-          this.gp.emitFromGamePanel("openMenu", "open");
-        }
       }
 
       //talk
-      if (this.gp.gameState === this.gp.fieldScene) {
+      if (this.gp.gameMode === "walk") {
         if (e.key === "e") {
           const collisionNPCIndex = this.gp.npc.findIndex(
             (person) => person.collision === true
           );
           if (collisionNPCIndex !== -1) {
-            this.gp.gameState = this.gp.talkingScene;
             this.gp.emitFromGamePanel(
               "runIntoNPC",
               this.gp.npc[collisionNPCIndex]
@@ -51,32 +48,22 @@ export class Keyhandler {
           }
         }
       }
-
-      if (this.gp.gameState === this.gp.objectTalkingScene) {
-        if (e.key === "e") {
-          this.gp.sound[2].playMusic();
-          this.gp.books[this.gp.whichSpeakIndex].dialogIndex++;
-          this.gp.books[this.gp.whichSpeakIndex].speak();
-        }
-      }
     });
   }
   public keyUp(): void {
-    if (this.gp.gameState === this.gp.fieldScene) {
-      window.addEventListener("keyup", (e) => {
-        if (e.key === "w") {
-          this.upPressed = false;
-        }
-        if (e.key === "s") {
-          this.downPressed = false;
-        }
-        if (e.key === "a") {
-          this.leftPressed = false;
-        }
-        if (e.key === "d") {
-          this.rightPressed = false;
-        }
-      });
-    }
+    window.addEventListener("keyup", (e) => {
+      if (e.key === "w") {
+        this.upPressed = false;
+      }
+      if (e.key === "s") {
+        this.downPressed = false;
+      }
+      if (e.key === "a") {
+        this.leftPressed = false;
+      }
+      if (e.key === "d") {
+        this.rightPressed = false;
+      }
+    });
   }
 }

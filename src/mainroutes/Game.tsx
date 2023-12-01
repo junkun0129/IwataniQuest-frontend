@@ -8,6 +8,7 @@ import { useAppSelector } from "../store/store";
 import Battle from "../gamecompo/Battle";
 import BattleDebag from "../gamecompo/BattleDebag";
 import useScreenSwitch from "../customhooks/useScreenSwitch";
+import FieldDebug from "../gamecompo/FieldDebug";
 
 function Game({ socket }: socketType) {
   const { fieldControl, battleControl } = useScreenSwitch({ socket });
@@ -15,6 +16,7 @@ function Game({ socket }: socketType) {
   return (
     <>
       <div className={styles.gameBox}>
+        <FieldDebug></FieldDebug>
         <motion.div
           animate={fieldControl}
           style={{ position: "absolute", width: "100vw", height: "100vh" }}

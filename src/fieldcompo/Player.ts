@@ -153,7 +153,7 @@ export class Player {
       if (this.gp.books[i].jumpable) window.location.href = "/book";
       if (this.gp.books[i].speakable) {
         this.gp.whichSpeakIndex = i;
-        this.gp.gameState = this.gp.objectTalkingScene;
+        // this.gp.gameState = this.gp.objectTalkingScene;
         this.gp.books[i].speak();
       }
     }

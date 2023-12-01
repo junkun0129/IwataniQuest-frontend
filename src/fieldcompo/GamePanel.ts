@@ -70,20 +70,6 @@ export class GamePanel {
   c: CanvasRenderingContext2D;
   socket: Socket<ServerToClientEvents, ClientToServerEvents>;
   count: number = 0;
-
-  //game state
-  public gameState: number = 1;
-  public fieldScene: number = 1;
-  public menuScene: number = 2;
-  public itemViewSecne: number = 3;
-  public startOverMakeSureScene: number = 4;
-  public talkingScene: number = 5;
-  public objectTalkingScene: number = 6;
-  public statusViewScene: number = 7;
-  public battleScene: number = 8;
-  public saveScene: number = 9;
-  public playerChattingScene: number = 10;
-
   public gameStartOver: boolean = false;
 
   //map state
@@ -159,6 +145,7 @@ export class GamePanel {
   eventListeners: Map<any, any>;
 
   public battleResult: battleResultType = null;
+  public gameMode: gameModeType = "walk";
   constructor(
     c: CanvasRenderingContext2D,
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
@@ -207,7 +194,7 @@ export class GamePanel {
     this.collisionM.mapArrayCreate();
     //draw on canvas
     this.draw();
-    if (this.gameState === this.fieldScene) {
+    if (this.gameMode === "walk") {
       //player
       this.player.update();
 
@@ -220,28 +207,21 @@ export class GamePanel {
     }
 
     // encount;
-    if (this.gameState === this.fieldScene && this.mapState === this.outField) {
+    if (this.gameMode === "walk" && this.mapState === this.outField) {
       this.encounterCoolDown -= 10;
       const encount = this.Encounter();
-      if (
-        encount &&
-        this.gameState !== this.battleScene &&
-        this.mapState === this.outField
-      ) {
+      if (encount && this.mapState === this.outField) {
         this.emitFromGamePanel("encountEnemies", "hit");
-        this.gameState = this.battleScene;
       }
     }
     // console.log(this.battleResult, "battleresult");
     if (this.battleResult === "win") {
-      this.gameState = this.fieldScene;
       this.mapState = this.outField;
     }
 
     if (this.battleResult === "lose") {
       this.player.playerX = this.status.status.x;
       this.player.playerY = this.status.status.y;
-      this.gameState = this.fieldScene;
       this.mapState = this.status.status.mapState;
       this.mapsChange = true;
       this.asset.setCollisions();
@@ -295,6 +275,7 @@ export class GamePanel {
     }
     this.customEventListeners[event].push(listener);
   }
+
   public emitFromGamePanel(event: onFromGamePanelType, data: any) {
     if (this.customEventListeners[event]) {
       for (const listener of this.customEventListeners[event]) {
@@ -306,12 +287,10 @@ export class GamePanel {
   emitFromRedux(
     user: userSliceType,
     battleResult: battleResultType,
-    gamemode: gameModeType
+    gameMode: gameModeType
   ) {
     this.status = user;
     this.battleResult = battleResult;
-    if (gamemode === "walk") {
-      this.gameState = this.fieldScene;
-    }
+    this.gameMode = gameMode;
   }
 }

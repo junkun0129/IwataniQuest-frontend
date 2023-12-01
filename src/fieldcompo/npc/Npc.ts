@@ -36,7 +36,7 @@ export class Npc extends Entity {
     const maxDialogIndex = this.dialogs.length;
 
     if (this.dialogIndex === maxDialogIndex) {
-      this.gp.gameState = this.gp.fieldScene;
+      // this.gp.gameState = this.gp.fieldScene;
       this.dialogIndex = 0;
     }
     this.gp.ui.currentDialog = this.dialogs[this.dialogIndex];
