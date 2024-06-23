@@ -23,3 +23,6 @@ This game is an RPG built with Typescript, where you can walk around and defeat 
 ### You can save your data in this game. Your account will be stored on the MongoDB database through the server.
 ![IwataniQuest-saving](https://github.com/junkun0129/IwataniQuest-frontend/assets/104805770/4f6d92f4-86e5-44bf-984b-a1e5895b895f)
 
+https://o-secret-28ozsroi0-junkun0129s-projects.vercel.app/
+
+
